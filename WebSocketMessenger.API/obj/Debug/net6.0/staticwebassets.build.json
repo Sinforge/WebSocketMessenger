@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "5PqJ8fSC9CCE3vKx01oILpOlOTnGFHd1DPv5XbvRN1k=",
+  "Source": "WebSocketMessenger.API",
+  "BasePath": "_content/WebSocketMessenger.API",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

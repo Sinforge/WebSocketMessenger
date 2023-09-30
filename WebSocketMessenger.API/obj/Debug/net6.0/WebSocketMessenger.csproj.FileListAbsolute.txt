@@ -1,0 +1,6 @@
+C:\Users\vladv\source\repos\WebSocketMessenger\WebSocketMessenger\obj\Debug\net6.0\WebSocketMessenger.csproj.AssemblyReference.cache
+C:\Users\vladv\source\repos\WebSocketMessenger\WebSocketMessenger\obj\Debug\net6.0\WebSocketMessenger.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\vladv\source\repos\WebSocketMessenger\WebSocketMessenger\obj\Debug\net6.0\WebSocketMessenger.AssemblyInfoInputs.cache
+C:\Users\vladv\source\repos\WebSocketMessenger\WebSocketMessenger\obj\Debug\net6.0\WebSocketMessenger.AssemblyInfo.cs
+C:\Users\vladv\source\repos\WebSocketMessenger\WebSocketMessenger\obj\Debug\net6.0\WebSocketMessenger.csproj.CoreCompileInputs.cache
+C:\Users\vladv\source\repos\WebSocketMessenger\WebSocketMessenger\obj\Debug\net6.0\WebSocketMessenger.MvcApplicationPartsAssemblyInfo.cache
