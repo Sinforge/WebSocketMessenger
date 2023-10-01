@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace WebSockerMessenger.Core.Models
 {
-    internal class Group
+    public class Group
     {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
     }
 }

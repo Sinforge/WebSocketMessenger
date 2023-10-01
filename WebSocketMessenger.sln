@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebSocketMessenger.API", "WebSocketMessenger\WebSocketMessenger.API.csproj", "{A168A802-5733-4A49-A0FB-087DF29E4F1D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebSocketMessenger.API", "WebSocketMessenger.API\WebSocketMessenger.API.csproj", "{A168A802-5733-4A49-A0FB-087DF29E4F1D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebSocketMessenger.Infrastructure", "WebSocketMessenger.Infrastructure\WebSocketMessenger.Infrastructure.csproj", "{E594903E-D1AD-4D73-BCD2-7FA28B6B09F8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebSockerMessenger.Core", "WebSockerMessenger.Core\WebSockerMessenger.Core.csproj", "{D3094D49-A648-4593-8E27-78BC846CF78F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebSockerMessenger.Core", "WebSockerMessenger.Core\WebSockerMessenger.Core.csproj", "{D3094D49-A648-4593-8E27-78BC846CF78F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebSocketMessenger.UseCases", "WebSocketMessenger.UseCases\WebSocketMessenger.UseCases.csproj", "{8665E2E2-AB73-4CEB-AC9C-703667277A14}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{D3094D49-A648-4593-8E27-78BC846CF78F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3094D49-A648-4593-8E27-78BC846CF78F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3094D49-A648-4593-8E27-78BC846CF78F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8665E2E2-AB73-4CEB-AC9C-703667277A14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8665E2E2-AB73-4CEB-AC9C-703667277A14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8665E2E2-AB73-4CEB-AC9C-703667277A14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8665E2E2-AB73-4CEB-AC9C-703667277A14}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
