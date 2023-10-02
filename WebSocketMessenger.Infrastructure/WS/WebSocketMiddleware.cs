@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
 using System.Net.WebSockets;
 using WebSocketMessenger.Infrastructure.WS.Handlers.Abstractions;
 using WebSocketMessenger.Infrastructure.WS.WebSocketConnectionManager.Abstractions;
@@ -30,18 +32,27 @@ namespace WebSocketMessenger.WS
                 }
                 else
                 {
-                    _handler.HandleMessage(result, buffer);
+                    await _handler.HandleMessage(result, buffer);
                 }
             }
         }
 
         public async Task InvokeAsync(HttpContext context)
         {
-            if(context.WebSockets.IsWebSocketRequest)
+            if (context.WebSockets.IsWebSocketRequest)
             {
-                using var webSocket = await context.WebSockets.AcceptWebSocketAsync();
-                string socketId = _connectionManager.AddSocket(webSocket);
-                await ReceiveMessage(webSocket);
+                var result = await context.AuthenticateAsync(JwtBearerDefaults.AuthenticationScheme);
+                if (result.Succeeded) {
+                    using var webSocket = await context.WebSockets.AcceptWebSocketAsync();
+                    _connectionManager.AddSocket(webSocket, result?.Principal?.Claims?.FirstOrDefault(c => c.Type == "Id")?.Value);
+                    await ReceiveMessage(webSocket);
+                }
+                else
+                {
+                    await _next(context);
+                }
+                
+                
                 //await ReceiveMessage(webSocket, async (result, buffer) =>
                 //{
                 //    if(result.MessageType == WebSocketMessageType.Text)

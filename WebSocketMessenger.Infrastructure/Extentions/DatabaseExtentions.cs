@@ -14,7 +14,8 @@ namespace WebSocketMessenger.Infrastructure.Extentions
         {
             services.AddSingleton<ApplicationContext>();
             services.AddSingleton<DatabaseManager>();
-            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IMessageRepository, MessageRepository>();    
             services.AddLogging(c => c.AddFluentMigratorConsole())
                     .AddFluentMigratorCore()
                     .ConfigureRunner(c => c.AddPostgres()

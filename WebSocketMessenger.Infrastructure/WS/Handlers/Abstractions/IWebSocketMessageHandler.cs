@@ -10,6 +10,6 @@ namespace WebSocketMessenger.Infrastructure.WS.Handlers.Abstractions
     public interface IWebSocketMessageHandler
     {
 
-        void HandleMessage(WebSocketReceiveResult result, byte[] message);
+        Task HandleMessage(WebSocketReceiveResult result, byte[] message);
     }
 }

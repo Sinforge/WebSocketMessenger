@@ -17,9 +17,9 @@ namespace WebSockerMessenger.Core.Models
 
 
         // Group or user
-        public int ReceiverType { get; set; }
+        public int MessageType { get; set; }
 
         //File or text
-        public int MessageType { get; set; }
+        public int MessageContentType { get; set; }
     }
 }

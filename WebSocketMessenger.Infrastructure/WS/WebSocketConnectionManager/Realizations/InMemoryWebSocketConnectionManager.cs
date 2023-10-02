@@ -7,19 +7,18 @@ namespace WebSocketMessenger.Infrastructure.WS.WebSocketConnectionManager.Realiz
     public class InMemoryWebSocketConnectionManager : IWebSocketConnectionManager
     {
         private readonly ConcurrentDictionary<string, List<WebSocket>> _sockets = new ConcurrentDictionary<string, List<WebSocket>>();
-        public string AddSocket(WebSocket webSocket)
+        public string AddSocket(WebSocket webSocket, string userId)
         {
             //change to user id
-            string socketId = Guid.NewGuid().ToString();
-            if(_sockets.ContainsKey(socketId))
+            if(_sockets.ContainsKey(userId))
             {
-                _sockets[socketId].Add(webSocket);
+                _sockets[userId].Add(webSocket);
             }
             else
             {
-                _sockets.TryAdd(socketId, new List<WebSocket>() { webSocket});
+                _sockets.TryAdd(userId, new List<WebSocket>() { webSocket});
             }
-            return socketId;
+            return userId.ToString();
         }
 
         public void DeleteSocket(WebSocket webSocket)

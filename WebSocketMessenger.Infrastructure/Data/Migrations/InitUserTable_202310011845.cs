@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace WebSocketMessenger.Infrastructure.Data.Migrations
 {
-    [Migration(202301101845, "Initial of user table")]
-    public class InitUserTable_202301101845 : Migration
+    [Migration(202310011845, "Initial of user table")]
+    public class InitUserTable_202310011845 : Migration
     {
         public override void Down()
         {

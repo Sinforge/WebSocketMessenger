@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Data;
@@ -55,12 +56,21 @@ namespace WebSocketMessenger.API.Controllers
         
         }
 
+        [HttpGet]
+        [Route("/{id}")]
+        [Authorize]
+        public async Task<User> GetUserByIdAsync([FromRoute] Guid id)
+        {
+            return null;
+        }
+
 
         [NonAction]
         private JwtResponse CreateToken(User user)
         {
             var claims = new List<Claim>
             {
+                new Claim("Id", user.Id.ToString()),
                 new Claim(ClaimsIdentity.DefaultNameClaimType, user.UserName),
             };
             var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_options.Value.Secret));
