@@ -10,6 +10,7 @@ namespace WebSockerMessenger.Core.Models
     {
         public int Id { get; set; }
 
+        public DateTime SendTime { get; set; }
         public Guid SenderId { get; set; }
         public Guid ReceiverId { get; set; }
        
@@ -21,5 +22,7 @@ namespace WebSockerMessenger.Core.Models
 
         //File or text
         public int MessageContentType { get; set; }
+
+
     }
 }

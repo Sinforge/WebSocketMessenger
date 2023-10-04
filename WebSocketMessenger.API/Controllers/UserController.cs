@@ -56,6 +56,7 @@ namespace WebSocketMessenger.API.Controllers
         
         }
 
+
         [HttpGet]
         [Route("/{id}")]
         [Authorize]

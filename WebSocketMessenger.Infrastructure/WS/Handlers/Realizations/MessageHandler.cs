@@ -1,10 +1,14 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Bson;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.WebSockets;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using WebSockerMessenger.Core.DTOs.WebSocket.Base;
+using WebSockerMessenger.Core.DTOs.WebSocket.Content;
 using WebSockerMessenger.Core.Models;
 using WebSockerMessenger.Core.Utils;
 using WebSocketMessenger.Infrastructure.Data.Repositories.Abstractions;
@@ -59,22 +63,9 @@ namespace WebSocketMessenger.Infrastructure.WS.Handlers.Realizations
             string messageString;
             if (result.MessageType == WebSocketMessageType.Text) {
                 messageString = Encoding.UTF8.GetString(message, 0, result.Count);
-                var routeOb = JsonConvert.DeserializeObject<dynamic>(messageString);
-                if(routeOb?.Method == "Create")
-                {
-                    Message messageObj = _messageFactory.CreateMessage(routeOb);
-                    await _messageRepository.CreateMessageAsync(messageObj);
-                    var webSockets = _connectionManager.GetAllSockets()[(string)(routeOb.Message.Data.To)];
-                    foreach(var webSocket in webSockets)
-                    {
-                        await webSocket.SendAsync(new ArraySegment<byte>(message,0,result.Count), WebSocketMessageType.Text, true, cancellationToken: CancellationToken.None);
-                    }
-                }
-                //if(routeOb?.OperationType == OperationType.Create)
-                //{
-
-
-                //}
+                IMessageBase<MessageContentBase>? castedToMessageType = AnalizeDynamic(messageString);
+                await castedToMessageType.Handle(_connectionManager, _messageRepository);
+   
                 
             }
 
@@ -82,6 +73,37 @@ namespace WebSocketMessenger.Infrastructure.WS.Handlers.Realizations
 
             
         }
-        
+        private  IMessageBase<MessageContentBase>? AnalizeDynamic(string json)
+        {
+
+            // Получение текущей сборки
+            Assembly assembly = Assembly.GetExecutingAssembly();
+
+            // Получение всех типов из текущей сборки
+            IEnumerable<Type> types = assembly.GetTypes().Where(t => t.BaseType == typeof(MessageContentBase));
+
+            object? convertedType = null;
+
+            // Проходимся по каждому типу
+            foreach (Type type in types)
+            {
+                try
+                {
+                    var newType = typeof(MessageBase<>).MakeGenericType(type);
+                    return ((IMessageBase<MessageContentBase>?)JsonConvert.DeserializeObject(json, newType));
+                }
+                catch (JsonException ex)
+                {
+                    continue;
+                }
+
+
+
+            }
+            return null;
+
+
+        }
+
     }
 }

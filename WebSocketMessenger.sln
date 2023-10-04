@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebSocketMessenger.Infrastr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebSockerMessenger.Core", "WebSockerMessenger.Core\WebSockerMessenger.Core.csproj", "{D3094D49-A648-4593-8E27-78BC846CF78F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebSocketMessenger.UseCases", "WebSocketMessenger.UseCases\WebSocketMessenger.UseCases.csproj", "{8665E2E2-AB73-4CEB-AC9C-703667277A14}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebSocketMessenger.UseCases", "WebSocketMessenger.UseCases\WebSocketMessenger.UseCases.csproj", "{8665E2E2-AB73-4CEB-AC9C-703667277A14}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
