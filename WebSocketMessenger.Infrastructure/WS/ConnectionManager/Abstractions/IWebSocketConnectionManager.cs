@@ -8,5 +8,7 @@ namespace WebSocketMessenger.Infrastructure.WS.WebSocketConnectionManager.Abstra
         public string AddSocket(WebSocket webSocket, string userId);
         public void DeleteSocket(WebSocket webSocket);
         public ConcurrentDictionary<string, List<WebSocket>> GetAllSockets();
+
+        public IEnumerable<WebSocket> GetGroupSockets(IEnumerable<Guid> userIds);
     }
 }

@@ -22,8 +22,8 @@ namespace WebSocketMessenger.Infrastructure.Data.Repositories
         public async Task<bool> CreateMessageAsync(Message message)
         {
             bool result = false;
-            string insertQuery = "insert into public.message (sender_id, receiver_id, content, message_type, message_content_type) values" +
-                "(@SenderId, @ReceiverId, @Content, @MessageType, @MessageContentType);";
+            string insertQuery = "insert into public.message (sender_id, receiver_id, content, message_type, message_content_type, send_date) values" +
+                "(@SenderId, @ReceiverId, @Content, @MessageType, @MessageContentType, @SendTime);";
             try
             {
                 using(var connection = _context.CreateConnection())
@@ -37,6 +37,47 @@ namespace WebSocketMessenger.Infrastructure.Data.Repositories
             {
                 _logger.LogWarning($"Cant insert new message: {e.Message}");
             }
+            return result;
+        }
+
+        public async Task<bool> DeleteMessageAsync(int messageId)
+        {
+            bool result = false;
+            string deleteQuery = "delete from public.message where id = @id";
+            try
+            {
+                using(var connection = _context.CreateConnection())
+                {
+                    await connection.ExecuteAsync(deleteQuery, new { id = messageId });
+                    result = true;
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogWarning($"Cant delete message with id: {messageId} {e.Message}");
+            }
+            return result;
+
+        }
+
+        public async Task<bool> UpdateMessageAsync(int messageId, string content)
+        {
+            bool result = false;
+            string updateQuery = "update public.message set " +
+                "content = @content where id = @id";
+            try
+            {
+                using(var connection = _context.CreateConnection())
+                {
+                    await connection.ExecuteAsync(updateQuery, new { content = content, id = messageId });
+                    result = true;
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogWarning($"Cant update message with id: {messageId} {e.Message}");
+            }
+
             return result;
         }
     }

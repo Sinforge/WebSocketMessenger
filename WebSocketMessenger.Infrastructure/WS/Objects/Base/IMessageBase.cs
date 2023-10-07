@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WebSocketMessenger.Infrastructure.Data.Repositories.Abstractions;
+using WebSocketMessenger.Infrastructure.WS.Objects;
 using WebSocketMessenger.Infrastructure.WS.WebSocketConnectionManager.Abstractions;
 
 namespace WebSockerMessenger.Core.DTOs.WebSocket.Base
@@ -22,8 +23,8 @@ namespace WebSockerMessenger.Core.DTOs.WebSocket.Base
         public HeaderInfo HeaderInfo { get; set; }
         public T MessageContent { get; }
 
-        public async Task Handle(IWebSocketConnectionManager connectionManager, IMessageRepository messageRepository) {
-            await MessageContent.HandleAsync(HeaderInfo, connectionManager, messageRepository);
+        public async Task Handle(IWebSocketConnectionManager connectionManager, RepositoryCollection repositoryCollection) {
+            await MessageContent.HandleAsync(HeaderInfo, connectionManager, repositoryCollection);
         }
 
 

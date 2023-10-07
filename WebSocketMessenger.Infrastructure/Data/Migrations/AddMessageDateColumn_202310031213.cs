@@ -6,9 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace WebSocketMessenger.Infrastructure.Data.Migrations
-{
-    [Migration(202310031213)]
-    internal class AddMessageDateColumn_202310031213 : Migration
+{              
+    [Migration(202310031213, "Add send_data columng")]
+    public class AddMessageDateColumn_202310031213 : Migration
     {
         public override void Down()
         {

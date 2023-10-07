@@ -4,14 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.WebSockets;
 using System.Text;
-using System.Threading.Tasks;
 using WebSockerMessenger.Core.DTOs.WebSocket.Base;
-using WebSockerMessenger.Core.Models;
-using WebSocketMessenger.Infrastructure.Data.Repositories;
-using WebSocketMessenger.Infrastructure.Data.Repositories.Abstractions;
 using WebSocketMessenger.Infrastructure.WS.WebSocketConnectionManager.Abstractions;
+using WebSockerMessenger.Core.Models;
 
-namespace WebSockerMessenger.Core.DTOs.WebSocket.Content
+namespace WebSocketMessenger.Infrastructure.WS.Objects.Content.Conversation
+
 {
     // JSON
 
@@ -45,18 +43,18 @@ namespace WebSockerMessenger.Core.DTOs.WebSocket.Content
     {
         public string Content { get; set; }
 
-        public override async Task HandleAsync(HeaderInfo header, IWebSocketConnectionManager connectionManager, IMessageRepository messageRepository)
+        public override async Task HandleAsync(HeaderInfo header, IWebSocketConnectionManager connectionManager, RepositoryCollection repositoryCollection)
         {
             Message message = new Message
             {
                 ReceiverId = header.To,
                 SenderId = header.From,
                 SendTime = header.SendTime,
-                Content = this.Content,
+                Content = Content,
                 MessageContentType = header.Content,
                 MessageType = header.Type
             };
-            await messageRepository.CreateMessageAsync(message);
+            await repositoryCollection.MessageRepository.CreateMessageAsync(message);
             var webSockets = connectionManager.GetAllSockets()[header.To.ToString()];
             foreach (var webSocket in webSockets)
             {

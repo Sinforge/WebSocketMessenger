@@ -10,5 +10,7 @@ namespace WebSocketMessenger.Infrastructure.Data.Repositories.Abstractions
     public interface IMessageRepository
     {
         Task<bool> CreateMessageAsync(Message message);
+        Task<bool> UpdateMessageAsync(int messageId, string Content);
+        Task<bool> DeleteMessageAsync(int messageId);
     }
 }

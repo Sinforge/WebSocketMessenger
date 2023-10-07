@@ -6,6 +6,8 @@ using System.Reflection;
 using WebSocketMessenger.Infrastructure.Data;
 using WebSocketMessenger.Infrastructure.Data.Repositories;
 using WebSocketMessenger.Infrastructure.Data.Repositories.Abstractions;
+using WebSocketMessenger.Infrastructure.WS.Objects;
+
 namespace WebSocketMessenger.Infrastructure.Extentions
 {
     public static class DatabaseExtentions
@@ -15,7 +17,9 @@ namespace WebSocketMessenger.Infrastructure.Extentions
             services.AddSingleton<ApplicationContext>();
             services.AddSingleton<DatabaseManager>();
             services.AddTransient<IUserRepository, UserRepository>();
-            services.AddTransient<IMessageRepository, MessageRepository>();    
+            services.AddTransient<IMessageRepository, MessageRepository>(); 
+            services.AddTransient<IGroupRepository, GroupRepository>();
+            services.AddTransient<RepositoryCollection>();
             services.AddLogging(c => c.AddFluentMigratorConsole())
                     .AddFluentMigratorCore()
                     .ConfigureRunner(c => c.AddPostgres()

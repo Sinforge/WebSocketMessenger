@@ -8,11 +8,11 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using WebSockerMessenger.Core.DTOs.WebSocket.Base;
-using WebSockerMessenger.Core.DTOs.WebSocket.Content;
 using WebSockerMessenger.Core.Models;
 using WebSockerMessenger.Core.Utils;
 using WebSocketMessenger.Infrastructure.Data.Repositories.Abstractions;
 using WebSocketMessenger.Infrastructure.WS.Handlers.Abstractions;
+using WebSocketMessenger.Infrastructure.WS.Objects;
 using WebSocketMessenger.Infrastructure.WS.WebSocketConnectionManager.Abstractions;
 
 namespace WebSocketMessenger.Infrastructure.WS.Handlers.Realizations
@@ -21,10 +21,10 @@ namespace WebSocketMessenger.Infrastructure.WS.Handlers.Realizations
     {
         private readonly IWebSocketConnectionManager _connectionManager;
         private readonly MessageFactory _messageFactory;
-        private readonly IMessageRepository _messageRepository;
-        public MessageHandler(IWebSocketConnectionManager connectionManager, MessageFactory messageFactory, IMessageRepository messageRepository)
+        private readonly RepositoryCollection _repositoryCollection;
+        public MessageHandler(IWebSocketConnectionManager connectionManager, MessageFactory messageFactory, RepositoryCollection repositoryCollection)
         {
-            _messageRepository = messageRepository;
+            _repositoryCollection = repositoryCollection;
             _messageFactory = messageFactory;
             _connectionManager = connectionManager;
         }
@@ -64,7 +64,7 @@ namespace WebSocketMessenger.Infrastructure.WS.Handlers.Realizations
             if (result.MessageType == WebSocketMessageType.Text) {
                 messageString = Encoding.UTF8.GetString(message, 0, result.Count);
                 IMessageBase<MessageContentBase>? castedToMessageType = AnalizeDynamic(messageString);
-                await castedToMessageType.Handle(_connectionManager, _messageRepository);
+                await castedToMessageType.Handle(_connectionManager, _repositoryCollection);
    
                 
             }
@@ -82,15 +82,19 @@ namespace WebSocketMessenger.Infrastructure.WS.Handlers.Realizations
             // Получение всех типов из текущей сборки
             IEnumerable<Type> types = assembly.GetTypes().Where(t => t.BaseType == typeof(MessageContentBase));
 
-            object? convertedType = null;
+            dynamic obj = JsonConvert.DeserializeObject<dynamic>(json);
 
             // Проходимся по каждому типу
             foreach (Type type in types)
             {
                 try
                 {
-                    var newType = typeof(MessageBase<>).MakeGenericType(type);
-                    return ((IMessageBase<MessageContentBase>?)JsonConvert.DeserializeObject(json, newType));
+                    if(type.Name.Contains((string) obj.HeaderInfo.Method))
+                    {
+                        var newType = typeof(MessageBase<>).MakeGenericType(type);
+                        return ((IMessageBase<MessageContentBase>?)JsonConvert.DeserializeObject(json, newType));
+                    }
+                    
                 }
                 catch (JsonException ex)
                 {

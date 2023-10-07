@@ -36,5 +36,25 @@ namespace WebSocketMessenger.Infrastructure.WS.WebSocketConnectionManager.Realiz
         }
 
         public ConcurrentDictionary<string, List<WebSocket>> GetAllSockets() => _sockets;
+
+
+        public IEnumerable<WebSocket> GetGroupSockets(IEnumerable<Guid> userIds)
+        {
+            LinkedList<WebSocket> result = new();
+            foreach(var socketId in  _sockets.Keys)
+            {
+                if(userIds.Contains(Guid.Parse(socketId)))
+                {
+                    foreach(WebSocket socket in _sockets[socketId])
+                    {
+                        result.AddLast(socket);
+                    }
+                }
+            }
+            return result;
+            
+
+            
+        }
     }
 }

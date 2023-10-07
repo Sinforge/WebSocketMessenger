@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace WebSocketMessenger.Infrastructure.Data.Migrations
 {
-    [Migration(202303101158, "Create group's tables")]
-    internal class InitGroupTable_202310031158 : Migration
+    [Migration(202310031158, "Create group's tables")]
+    public class InitGroupTable_202310031158 : Migration
     {
         public override void Down()
         {
