@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -61,7 +62,17 @@ namespace WebSocketMessenger.UseCases.Services
 
         public async Task<User?> CheckUserCredentials(LoginDTO loginDTO)
         {
-            return await _userRepository.CheckUserCredentials(loginDTO.Password, loginDTO.Login);
+            User? user = await _userRepository.CheckUserCredentials(loginDTO.Login);
+            var verifyResult =new PasswordHasher<object?>().VerifyHashedPassword(null, user.Password, loginDTO.Password);
+            if(verifyResult == PasswordVerificationResult.Failed)
+            {
+                return null;
+            }
+            else
+            {
+                return user;
+            }
+
         }
     }
 }

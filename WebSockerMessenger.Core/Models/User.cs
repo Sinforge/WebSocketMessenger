@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Identity;
 using WebSockerMessenger.Core.DTOs;
 
 namespace WebSockerMessenger.Core.Models
@@ -24,7 +20,7 @@ namespace WebSockerMessenger.Core.Models
             Email = userDTO.Email;
             Surname = userDTO.Surname;
             UserName = userDTO.UserName;
-            Password = userDTO.Password;
+            Password = new PasswordHasher<object?>().HashPassword(null, userDTO.Password);
 
         }
         public override string ToString()

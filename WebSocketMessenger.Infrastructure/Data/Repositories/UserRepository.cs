@@ -133,15 +133,15 @@ namespace WebSocketMessenger.Infrastructure.Data.Repositories
             return true;
 
         }
-        public async Task<User?> CheckUserCredentials(string password, string username)
+        public async Task<User?> CheckUserCredentials(string username)
         {
-            string selectQuery = "select * from public.user where password = @password and username = @username";
+            string selectQuery = "select * from public.user where username = @username";
             User? user = null;
             try
             {
                 using (var connection = _context.CreateConnection())
                 {
-                    user = await connection.QuerySingleOrDefaultAsync<User>(selectQuery, new { password = password, username = username });
+                    user = await connection.QuerySingleOrDefaultAsync<User>(selectQuery, new { username = username });
                 }
             }
             catch

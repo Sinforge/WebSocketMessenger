@@ -16,7 +16,7 @@ namespace WebSocketMessenger.Infrastructure.Data.Repositories.Abstractions
         Task<bool> UpdateUserAsync(User user);
         Task<bool> DeleteUserAsync(Guid id);
 
-        Task<User?> CheckUserCredentials(string password, string login);
+        Task<User?> CheckUserCredentials(string login);
 
     }
 }
