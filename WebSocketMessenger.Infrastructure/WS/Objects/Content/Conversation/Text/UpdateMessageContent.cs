@@ -5,11 +5,13 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading.Tasks;
 using WebSockerMessenger.Core.DTOs.WebSocket.Base;
+using WebSockerMessenger.Core.Models;
+using WebSockerMessenger.Core.Utils;
 using WebSocketMessenger.Infrastructure.Data.Repositories.Abstractions;
 using WebSocketMessenger.Infrastructure.WS.Objects;
 using WebSocketMessenger.Infrastructure.WS.WebSocketConnectionManager.Abstractions;
 
-namespace WebSocketMessenger.Infrastructure.WS.Objects.Content.Conversation
+namespace WebSocketMessenger.Infrastructure.WS.Objects.Content.Conversation.Text
 {
     public class UpdateMessageContent : MessageContentBase
     {
@@ -18,7 +20,17 @@ namespace WebSocketMessenger.Infrastructure.WS.Objects.Content.Conversation
 
         public override async Task HandleAsync(HeaderInfo header, IWebSocketConnectionManager connectionManager, RepositoryCollection repositoryCollection)
         {
-            await repositoryCollection.MessageRepository.UpdateMessageAsync(MessageId, NewContent);
+            Message? currentMessage = await repositoryCollection.MessageRepository.GetMessageByIdAsync(MessageId);
+            if (currentMessage != null)
+            {
+                if (currentMessage.MessageContentType == 2)
+                {
+                    FileManager.DeleteFile(currentMessage.Content);
+
+                }
+                await repositoryCollection.MessageRepository.UpdateMessageAsync(MessageId, NewContent, 1);
+                
+            }
             var webSockets = connectionManager.GetAllSockets()[header.To.ToString()];
             foreach (var webSocket in webSockets)
             {

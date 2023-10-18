@@ -11,7 +11,7 @@ using WebSocketMessenger.Infrastructure.Data.Repositories.Abstractions;
 using WebSocketMessenger.Infrastructure.WS.Objects;
 using WebSocketMessenger.Infrastructure.WS.WebSocketConnectionManager.Abstractions;
 
-namespace WebSocketMessenger.Infrastructure.WS.Objects.Content.Conversation
+namespace WebSocketMessenger.Infrastructure.WS.Objects.Content.Conversation.Text
 {
     public class DeleteMessageContent : MessageContentBase
     {

@@ -8,7 +8,7 @@ using WebSockerMessenger.Core.DTOs.WebSocket.Base;
 using WebSocketMessenger.Infrastructure.WS.WebSocketConnectionManager.Abstractions;
 using WebSockerMessenger.Core.Models;
 
-namespace WebSocketMessenger.Infrastructure.WS.Objects.Content.Conversation
+namespace WebSocketMessenger.Infrastructure.WS.Objects.Content.Conversation.Text
 
 {
     // JSON

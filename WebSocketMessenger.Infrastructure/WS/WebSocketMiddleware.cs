@@ -21,7 +21,7 @@ namespace WebSocketMessenger.WS
 
         private async Task ReceiveMessage(WebSocket ws)
         {
-            var buffer = new byte[1024 * 4];
+            var buffer = new byte[1024 * 5 * 1024];
             while(ws.State == WebSocketState.Open)
             {
                 var result = await ws.ReceiveAsync(buffer :new ArraySegment<byte>(buffer),
