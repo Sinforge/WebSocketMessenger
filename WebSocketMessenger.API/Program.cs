@@ -1,12 +1,8 @@
-using WebSocketMessenger.Infrastructure.Extentions;
-using WebSocketMessenger.Infrastructure.WS.WebSocketConnectionManager.Realizations;
-using WebSocketMessenger.UseCases.Extentions;
 using WebSocketMessenger.API.Extentions;
-using WebSockerMessenger.Core.Utils;
+using WebSocketMessenger.Infrastructure.WS;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
-builder.Services.AddSingleton<MessageFactory>();
 builder.Services.AddDapperDatabase(builder.Configuration);
 builder.Services.AddWebSocketConnectionManager<InMemoryWebSocketConnectionManager>();
 builder.Services.AddUseCases();

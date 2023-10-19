@@ -1,10 +1,4 @@
 ﻿using FluentMigrator;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace WebSocketMessenger.Infrastructure.Data.Migrations
 {              
     [Migration(202310031213, "Add send_data columng")]

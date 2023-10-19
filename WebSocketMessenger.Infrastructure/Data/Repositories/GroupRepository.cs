@@ -1,13 +1,6 @@
 ﻿using Dapper;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using WebSockerMessenger.Core.Models;
-using WebSocketMessenger.Infrastructure.Data.Repositories.Abstractions;
+using WebSocketMessenger.Core.Interfaces.Repositories;
 
 namespace WebSocketMessenger.Infrastructure.Data.Repositories
 {

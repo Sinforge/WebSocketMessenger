@@ -2,16 +2,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using WebSockerMessenger.Core.Configuration;
 using WebSockerMessenger.Core.DTOs;
+using WebSockerMessenger.Core.Interfaces.Services;
 using WebSockerMessenger.Core.Models;
-using WebSocketMessenger.Infrastructure.Data.Repositories.Abstractions;
-using WebSocketMessenger.UseCases.Services;
-using WebSocketMessenger.UseCases.Services.Abstractions;
 
 namespace WebSocketMessenger.API.Controllers
 {
@@ -33,7 +30,15 @@ namespace WebSocketMessenger.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Registration([FromBody] UserDTO userDTO)
         {
-            if (await _userService.CreateUserAsync(userDTO)) return StatusCode(201);
+            if (await _userService.CreateUserAsync(new User
+            {
+                UserName = userDTO.UserName,
+                Email = userDTO.Email,
+                Password = userDTO.Password,
+                Surname = userDTO.Surname,
+                Name = userDTO.Name,
+            
+            })) return StatusCode(201);
             else return StatusCode(400);
         }
 
@@ -43,7 +48,7 @@ namespace WebSocketMessenger.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Authorize([FromBody] LoginDTO loginDTO)
         {
-            User? user = await _userService.CheckUserCredentials(loginDTO);
+            User? user = await _userService.CheckUserCredentials(loginDTO.Login, loginDTO.Password);
             if (user != null)
             {
                 JwtResponse token =  CreateToken(user);

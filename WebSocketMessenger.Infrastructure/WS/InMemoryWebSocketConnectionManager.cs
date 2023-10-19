@@ -1,0 +1,60 @@
+﻿using System.Collections.Concurrent;
+using System.Net.WebSockets;
+using WebSockerMessenger.Core.Interfaces.WS;
+
+namespace WebSocketMessenger.Infrastructure.WS
+{
+    public class InMemoryWebSocketConnectionManager : IWebSocketConnectionManager
+    {
+        private readonly ConcurrentDictionary<string, List<WebSocket>> _sockets = new ConcurrentDictionary<string, List<WebSocket>>();
+        public string AddSocket(WebSocket webSocket, string userId)
+        {
+            //change to user id
+            if (_sockets.ContainsKey(userId))
+            {
+                _sockets[userId].Add(webSocket);
+            }
+            else
+            {
+                _sockets.TryAdd(userId, new List<WebSocket>() { webSocket });
+            }
+            return userId.ToString();
+        }
+
+        public void DeleteSocket(WebSocket webSocket)
+        {
+            foreach (var socketList in _sockets.Values)
+            {
+                foreach (var socket in socketList)
+                {
+                    if (socket == webSocket)
+                    {
+                        socketList.Remove(socket);
+                    }
+                }
+            }
+        }
+
+        public ConcurrentDictionary<string, List<WebSocket>> GetAllSockets() => _sockets;
+
+
+        public IEnumerable<WebSocket> GetGroupSockets(IEnumerable<Guid> userIds)
+        {
+            LinkedList<WebSocket> result = new();
+            foreach (var socketId in _sockets.Keys)
+            {
+                if (userIds.Contains(Guid.Parse(socketId)))
+                {
+                    foreach (WebSocket socket in _sockets[socketId])
+                    {
+                        result.AddLast(socket);
+                    }
+                }
+            }
+            return result;
+
+
+
+        }
+    }
+}

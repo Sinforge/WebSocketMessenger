@@ -1,13 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WebSockerMessenger.Core.DTOs;
+using WebSockerMessenger.Core.Interfaces.Services;
 using WebSockerMessenger.Core.Models;
-using WebSocketMessenger.Infrastructure.Data.Repositories.Abstractions;
-using WebSocketMessenger.UseCases.Services.Abstractions;
+using WebSocketMessenger.Core.Interfaces.Repositories;
 
 namespace WebSocketMessenger.UseCases.Services
 {
@@ -20,16 +14,17 @@ namespace WebSocketMessenger.UseCases.Services
 
         }
 
-        public async Task<bool> CreateUserAsync(UserDTO userDTO)
+        public async Task<bool> CreateUserAsync(User user)
         {
-            if(await _userRepository.FindUserByUsernameAsync(userDTO.UserName) != null ||
-                await _userRepository.FindUserByEmailAsync(userDTO.Email) != null)
+            if(await _userRepository.FindUserByUsernameAsync(user.UserName) != null ||
+                await _userRepository.FindUserByEmailAsync(user.Email) != null)
             {
                 return false;
             }
             else
             {
-                return await _userRepository.CreateUserAsync(new User(userDTO));
+                user.Password = new PasswordHasher<object?>().HashPassword(null, user.Password);
+                return await _userRepository.CreateUserAsync(user);
             }
         }
 
@@ -60,10 +55,10 @@ namespace WebSocketMessenger.UseCases.Services
             return await _userRepository.UpdateUserAsync(user);
         }
 
-        public async Task<User?> CheckUserCredentials(LoginDTO loginDTO)
+        public async Task<User?> CheckUserCredentials(string login, string password)
         {
-            User? user = await _userRepository.CheckUserCredentials(loginDTO.Login);
-            var verifyResult =new PasswordHasher<object?>().VerifyHashedPassword(null, user.Password, loginDTO.Password);
+            User? user = await _userRepository.CheckUserCredentials(login);
+            var verifyResult =new PasswordHasher<object?>().VerifyHashedPassword(null, user.Password, password);
             if(verifyResult == PasswordVerificationResult.Failed)
             {
                 return null;
