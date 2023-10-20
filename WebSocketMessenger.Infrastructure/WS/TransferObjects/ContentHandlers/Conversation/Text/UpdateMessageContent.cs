@@ -25,16 +25,8 @@ namespace WebSocketMessenger.Infrastructure.WS.TransferObjects.ContentHandlers.C
                 await repositoryCollection.MessageRepository.UpdateMessageAsync(MessageId, NewContent, 1);
                 
             }
-            var webSockets = connectionManager.GetAllSockets()[header.To.ToString()];
-            foreach (var webSocket in webSockets)
-            {
-                await webSocket.SendAsync(new ArraySegment<byte>(
-                    Encoding.UTF8.GetBytes("Message updated")),
-                    WebSocketMessageType.Text,
-                    true,
-                    cancellationToken: CancellationToken.None
-                );
-            }
+            await connectionManager.NotifySocketsAsync(header.To.ToString(), Encoding.UTF8.GetBytes(MessageId.ToString()), header.Type);
+            
         }
     }
 }

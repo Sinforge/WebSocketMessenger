@@ -11,16 +11,8 @@ namespace WebSocketMessenger.Infrastructure.WS.TransferObjects.ContentHandlers.C
         public override async Task HandleAsync(HeaderInfo header, IWebSocketConnectionManager connectionManager, RepositoryCollection repositoryCollection)
         {
             await repositoryCollection.MessageRepository.DeleteMessageAsync(MessageId);
-            var webSockets = connectionManager.GetAllSockets()[header.To.ToString()];
-            foreach (var webSocket in webSockets)
-            {
-                await webSocket.SendAsync(new ArraySegment<byte>(
-                    Encoding.UTF8.GetBytes("Message deleted")),
-                    WebSocketMessageType.Text,
-                    true,
-                    cancellationToken: CancellationToken.None
-                );
-            }
+            await connectionManager.NotifySocketsAsync(header.To.ToString(), Encoding.UTF8.GetBytes(MessageId.ToString()), header.Type);
+           
         }
 
     }

@@ -12,16 +12,8 @@ namespace WebSocketMessenger.Infrastructure.WS.TransferObjects.ContentHandlers.G
         public override async Task HandleAsync(HeaderInfo header, IWebSocketConnectionManager connectionManager, RepositoryCollection repositoryCollection)
         {
             await repositoryCollection.GroupRepository.KickUserFromGroupAsync(GroupId, KickedUser);
-            var webSockets = connectionManager.GetGroupSockets(await repositoryCollection.GroupRepository.GetUserIdsByGroupAsync(GroupId));
-            foreach (var webSocket in webSockets)
-            {
-                await webSocket.SendAsync(new ArraySegment<byte>(
-                    Encoding.UTF8.GetBytes("User kicked updated")),
-                    WebSocketMessageType.Text,
-                    true,
-                    cancellationToken: CancellationToken.None
-                );
-            }
+            await connectionManager.NotifySocketsAsync(GroupId.ToString(), Encoding.UTF8.GetBytes($"User with id: {KickedUser} kicked"), 2);
+                   
         }
     }
 }

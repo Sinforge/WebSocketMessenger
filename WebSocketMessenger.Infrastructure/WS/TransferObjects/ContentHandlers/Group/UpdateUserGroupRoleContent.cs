@@ -1,4 +1,6 @@
-﻿using WebSockerMessenger.Core.Interfaces.WS;
+﻿using Newtonsoft.Json;
+using System.Text;
+using WebSockerMessenger.Core.Interfaces.WS;
 using WebSockerMessenger.Infrastructure.TransferObjets.Base;
 
 namespace WebSocketMessenger.Infrastructure.WS.TransferObjects.ContentHandlers.Group
@@ -11,7 +13,8 @@ namespace WebSocketMessenger.Infrastructure.WS.TransferObjects.ContentHandlers.G
         public override async Task HandleAsync(HeaderInfo header, IWebSocketConnectionManager connectionManager, RepositoryCollection repositoryCollection)
         {
             await repositoryCollection.GroupRepository.UpdateUserGroupRoleAsync(GroupId, UserId, RoleId);
-            var webSockets = connectionManager.GetAllSockets()[UserId.ToString()];
+            await connectionManager.NotifySocketsAsync(GroupId.ToString(), Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(this)), 2);
+
  
         }
     }

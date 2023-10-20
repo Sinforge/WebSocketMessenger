@@ -12,16 +12,8 @@ namespace WebSocketMessenger.Infrastructure.WS.TransferObjects.ContentHandlers.G
         public override async Task HandleAsync(HeaderInfo header, IWebSocketConnectionManager connectionManager, RepositoryCollection repositoryCollection)
         {
             await repositoryCollection.GroupRepository.AddUserToGroupAsync(GroupId, UserId);
-            var webSockets = connectionManager.GetAllSockets()[UserId.ToString()];
-            foreach (var webSocket in webSockets)
-            {
-                await webSocket.SendAsync(new ArraySegment<byte>(
-                    Encoding.UTF8.GetBytes("You was added in group")),
-                    WebSocketMessageType.Text,
-                    true,
-                    cancellationToken: CancellationToken.None
-                );
-            }
+            await connectionManager.NotifySocketsAsync(header.To.ToString(), Encoding.UTF8.GetBytes($"You was added in group {GroupId}"), header.Type);
+           
         }
     }
 }

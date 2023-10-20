@@ -12,16 +12,8 @@ namespace WebSocketMessenger.Infrastructure.WS.TransferObjects.ContentHandlers.G
         public override async Task HandleAsync(HeaderInfo header, IWebSocketConnectionManager connectionManager, RepositoryCollection repositoryCollection)
         {
             await repositoryCollection.GroupRepository.CreateGroupAsync(Name, CreatorId);
-            var webSockets = connectionManager.GetAllSockets()[CreatorId.ToString()];
-            foreach (var webSocket in webSockets)
-            {
-                await webSocket.SendAsync(new ArraySegment<byte>(
-                    Encoding.UTF8.GetBytes("Group created")),
-                    WebSocketMessageType.Text,
-                    true,
-                    cancellationToken: CancellationToken.None
-                );
-            }
+            await connectionManager.NotifySocketsAsync(CreatorId.ToString(), Encoding.UTF8.GetBytes("Group created"), 1);
+            
         }
     }
 }
