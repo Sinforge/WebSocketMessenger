@@ -10,8 +10,8 @@ namespace WebSocketMessenger.Infrastructure.WS.TransferObjects.ContentHandlers.C
         public int MessageId { get; set; }
         public override async Task HandleAsync(HeaderInfo header, IWebSocketConnectionManager connectionManager, RepositoryCollection repositoryCollection)
         {
-            await repositoryCollection.MessageRepository.DeleteMessageAsync(MessageId);
-            await connectionManager.NotifySocketsAsync(header.To.ToString(), Encoding.UTF8.GetBytes(MessageId.ToString()), header.Type);
+            _ =  repositoryCollection.MessageRepository.DeleteMessageAsync(MessageId);
+            _ =  connectionManager.NotifySocketsAsync(header.To.ToString(), Encoding.UTF8.GetBytes(MessageId.ToString()), header.Type);
            
         }
 

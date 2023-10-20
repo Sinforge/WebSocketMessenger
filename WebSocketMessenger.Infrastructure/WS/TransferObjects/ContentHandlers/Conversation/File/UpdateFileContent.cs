@@ -27,7 +27,7 @@ namespace WebSocketMessenger.Infrastructure.WS.TransferObjects.ContentHandlers.C
                 await repositoryCollection.MessageRepository.UpdateMessageAsync(MessageId, fileName, 2);
 
             }
-            await connectionManager.NotifySocketsAsync(header.To.ToString(), Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(MessageId.ToString())), header.Type);
+            _ = connectionManager.NotifySocketsAsync(header.To.ToString(), Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(MessageId.ToString())), header.Type);
         }
     }
 }

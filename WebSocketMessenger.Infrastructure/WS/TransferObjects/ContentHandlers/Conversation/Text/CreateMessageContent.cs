@@ -23,8 +23,8 @@ namespace WebSocketMessenger.Infrastructure.WS.TransferObjects.ContentHandlers.C
                 MessageContentType = header.Content,
                 MessageType = header.Type
             };
-            await repositoryCollection.MessageRepository.CreateMessageAsync(message);
-            await connectionManager.NotifySocketsAsync(header.To.ToString(), Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(message)), header.Type);
+            _ =  repositoryCollection.MessageRepository.CreateMessageAsync(message);
+            _ =  connectionManager.NotifySocketsAsync(header.To.ToString(), Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(message)), header.Type);
         }
     }
 }
