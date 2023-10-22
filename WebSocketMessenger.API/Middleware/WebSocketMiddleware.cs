@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Net;
 using System.Net.WebSockets;
 using WebSockerMessenger.Core.Interfaces.WS;
 
@@ -48,7 +49,7 @@ namespace WebSocketMessenger.API.Middleware
                 }
                 else
                 {
-                    await _next(context);
+                    throw new HttpRequestException(message: "You should be authorized to use websocket", null, HttpStatusCode.Unauthorized);
                 }
             }
             else

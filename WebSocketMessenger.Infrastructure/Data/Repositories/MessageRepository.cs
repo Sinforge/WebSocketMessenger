@@ -9,7 +9,8 @@ namespace WebSocketMessenger.Infrastructure.Data.Repositories
     {
         private readonly ApplicationContext _context;
         private readonly ILogger<IMessageRepository> _logger;
-        public MessageRepository(ApplicationContext context, ILogger<IMessageRepository> logger) {
+        public MessageRepository(ApplicationContext context, ILogger<IMessageRepository> logger)
+        {
             _logger = logger;
             _context = context;
         }
@@ -19,19 +20,13 @@ namespace WebSocketMessenger.Infrastructure.Data.Repositories
             bool result = false;
             string insertQuery = "insert into public.message (\"SenderId\", \"ReceiverId\", \"Content\", \"MessageType\", \"MessageContentType\", \"SendTime\") values" +
                 "(@SenderId, @ReceiverId, @Content, @MessageType, @MessageContentType, @SendTime);";
-            try
-            {
-                using(var connection = _context.CreateConnection())
-                {
-                    await connection.ExecuteAsync(insertQuery, message);
-                    result = true;
-                }
 
-            }
-            catch(Exception e)
+            using (var connection = _context.CreateConnection())
             {
-                _logger.LogWarning($"Cant insert new message: {e.Message}");
+                await connection.ExecuteAsync(insertQuery, message);
+                result = true;
             }
+
             return result;
         }
 
@@ -39,18 +34,13 @@ namespace WebSocketMessenger.Infrastructure.Data.Repositories
         {
             bool result = false;
             string deleteQuery = "delete from public.message where \"Id\" = @id";
-            try
+
+            using (var connection = _context.CreateConnection())
             {
-                using(var connection = _context.CreateConnection())
-                {
-                    await connection.ExecuteAsync(deleteQuery, new { id = messageId });
-                    result = true;
-                }
+                await connection.ExecuteAsync(deleteQuery, new { id = messageId });
+                result = true;
             }
-            catch (Exception e)
-            {
-                _logger.LogWarning($"Cant delete message with id: {messageId} {e.Message}");
-            }
+
             return result;
 
         }
@@ -61,17 +51,12 @@ namespace WebSocketMessenger.Infrastructure.Data.Repositories
             string selectQuery = "select * from public.message where " +
                 "(\"ReceiverId\" = @userId1 and \"SenderId\" = @userId2) or" +
                 "(\"ReceiverId\" = @userId2 and \"SenderId\" = @userId1); ";
-            try
+
+            using (var connection = _context.CreateConnection())
             {
-                using (var connection = _context.CreateConnection())
-                {
-                    result = await connection.QueryAsync<Message>(selectQuery, new { userId1 = userId1, userId2 = userId2 });
-                }
+                result = await connection.QueryAsync<Message>(selectQuery, new { userId1 = userId1, userId2 = userId2 });
             }
-            catch(Exception e)
-            {
-                _logger.LogWarning($"Cant found messages of users: {userId1} and {userId2} - {e.Message}");
-            }
+
             return result;
         }
 
@@ -80,17 +65,12 @@ namespace WebSocketMessenger.Infrastructure.Data.Repositories
             IEnumerable<Message> result = new LinkedList<Message>();
             string selectQuery = "select * from public.message where " +
                 "\"ReceiverId\" = @groupId;";
-            try
+
+            using (var connection = _context.CreateConnection())
             {
-                using (var connection = _context.CreateConnection())
-                {
-                    result = await connection.QueryAsync<Message>(selectQuery, new { groupId = groupId });
-                }
+                result = await connection.QueryAsync<Message>(selectQuery, new { groupId = groupId });
             }
-            catch (Exception e)
-            {
-                _logger.LogWarning($"Cant found messages of group : {groupId} - {e.Message}");
-            }
+
             return result;
         }
 
@@ -98,17 +78,12 @@ namespace WebSocketMessenger.Infrastructure.Data.Repositories
         {
             Message result = null;
             string selectQuery = "select * from public.message where \"Id\" = @id";
-            try
+
+            using (var connection = _context.CreateConnection())
             {
-                using(var connection = _context.CreateConnection())
-                {
-                    result = await connection.QuerySingleOrDefaultAsync<Message>(selectQuery, new {id = messageId});
-                }
+                result = await connection.QuerySingleOrDefaultAsync<Message>(selectQuery, new { id = messageId });
             }
-            catch (Exception e)
-            {
-                _logger.LogWarning($"Cant find message with id: {messageId} {e.Message}");
-            }
+
             return result;
         }
 
@@ -117,17 +92,11 @@ namespace WebSocketMessenger.Infrastructure.Data.Repositories
             bool result = false;
             string updateQuery = "update public.message set " +
                 "\"Content\" = @content, \"MessageContentType\" = @type where \"Id\" = @id";
-            try
+
+            using (var connection = _context.CreateConnection())
             {
-                using(var connection = _context.CreateConnection())
-                {
-                    await connection.ExecuteAsync(updateQuery, new { content = content, type = contentType, id = messageId });
-                    result = true;
-                }
-            }
-            catch (Exception e)
-            {
-                _logger.LogWarning($"Cant update message with id: {messageId} {e.Message}");
+                await connection.ExecuteAsync(updateQuery, new { content = content, type = contentType, id = messageId });
+                result = true;
             }
 
             return result;

@@ -18,18 +18,13 @@ namespace WebSocketMessenger.Infrastructure.Data.Repositories
         {
             bool result = false;
             string insertUserToGroup = "insert into public.user_group (group_id, user_id, role_id) values (@group_id, @user_id, @role_id);";
-            try
+
+            using (var connection = _context.CreateConnection())
             {
-                using(var connection = _context.CreateConnection())
-                {
-                    await connection.ExecuteAsync(insertUserToGroup, new { group_id = groupId, user_id = userId, role_id = 3 });
-                    result = true;
-                }
+                await connection.ExecuteAsync(insertUserToGroup, new { group_id = groupId, user_id = userId, role_id = 3 });
+                result = true;
             }
-            catch(Exception e)
-            {
-                _logger.LogWarning($"Cant create new group: {e.Message}");
-            }
+
             return result;
         }
 
@@ -39,26 +34,21 @@ namespace WebSocketMessenger.Infrastructure.Data.Repositories
             Guid groupId = Guid.NewGuid();
             string insertNewGroupQuery = "insert into public.group (id, name) values (@groupId, @name);";
             string insertUserGroupRelationQuery = "insert into public.user_group (group_id, user_id, role_id) values (@group_id, @user_id, @role_id);";
-            try
+
+            using (var connection = _context.CreateConnection())
             {
-                using (var connection = _context.CreateConnection())
+                connection.Open();
+                using (var transaction = connection.BeginTransaction())
                 {
-                    connection.Open();
-                    using(var transaction =  connection.BeginTransaction())
-                    {
-                        await connection.ExecuteAsync(insertNewGroupQuery, new { groupId = groupId, name = name });
-                        await connection.ExecuteAsync(insertUserGroupRelationQuery, new { group_id = groupId, user_id = creatorId, role_id = 1 });
-                        result = true;
-                        transaction.Commit();
-                    }
-                    
+                    await connection.ExecuteAsync(insertNewGroupQuery, new { groupId = groupId, name = name });
+                    await connection.ExecuteAsync(insertUserGroupRelationQuery, new { group_id = groupId, user_id = creatorId, role_id = 1 });
+                    result = true;
+                    transaction.Commit();
                 }
 
             }
-            catch (Exception e)
-            {
-                _logger.LogWarning($"Cant create new group: {e.Message}");
-            }
+
+
             return result;
 
         }
@@ -67,17 +57,12 @@ namespace WebSocketMessenger.Infrastructure.Data.Repositories
         {
             IEnumerable<Guid> result = null;
             string selectQuery = "select user_id from public.user_group where group_id = @group_id";
-            try
+            using (var connection = _context.CreateConnection())
             {
-                using (var connection = _context.CreateConnection())
-                {
-                    result = await connection.QueryAsync<Guid>(selectQuery, new { group_id = groupId });
-                }
+                result = await connection.QueryAsync<Guid>(selectQuery, new { group_id = groupId });
             }
-            catch (Exception e)
-            {
-                _logger.LogWarning($"Cant create new group: {e.Message}");
-            }
+
+
             return result;
         }
 
@@ -85,38 +70,26 @@ namespace WebSocketMessenger.Infrastructure.Data.Repositories
         {
             Guid id = Guid.Empty;
             string selectQuery = "select group_id from public.user_group where group_id = @group_id and user_id = @user_id;";
-            try
+
+            using (var connection = _context.CreateConnection())
             {
-                using (var connection = _context.CreateConnection())
-                {
-                    id = await connection.QueryFirstOrDefaultAsync<Guid>(selectQuery, new { group_id = groupId, user_id = userId });
-                    return id != Guid.Empty;
-                }
+                id = await connection.QueryFirstOrDefaultAsync<Guid>(selectQuery, new { group_id = groupId, user_id = userId });
             }
-            catch (Exception e)
-            {
-                _logger.LogWarning($"Cant find group: {e.Message}");
-                return false;
-            }
-            return false;
+            return id != Guid.Empty;
+
         }
 
         public async Task<bool> KickUserFromGroupAsync(Guid groupId, Guid userId)
         {
             bool result = false;
             string deleteQuery = "delete from public.user_group where group_id = @group_id and user_id = @user_id";
-            try
+
+            using (var connection = _context.CreateConnection())
             {
-                using(var connection = _context.CreateConnection())
-                {
-                    await connection.ExecuteAsync(deleteQuery, new { group_id = groupId, user_id = userId });
-                    result = true;
-                }
+                await connection.ExecuteAsync(deleteQuery, new { group_id = groupId, user_id = userId });
+                result = true;
             }
-            catch (Exception e)
-            {
-                _logger.LogWarning($"Cant create new group: {e.Message}");
-            }
+
             return result;
         }
 
@@ -124,17 +97,11 @@ namespace WebSocketMessenger.Infrastructure.Data.Repositories
         {
             bool result = false;
             string updateQuery = "update public.group set name = @name where id= @group_id";
-            try
+
+            using (var connection = _context.CreateConnection())
             {
-                using (var connection = _context.CreateConnection())
-                {
-                    await connection.ExecuteAsync(updateQuery, new { name = groupName, group_id= groupId });
-                    result = true;
-                }
-            }
-            catch (Exception e)
-            {
-                _logger.LogWarning($"Cant update group: {e.Message}");
+                await connection.ExecuteAsync(updateQuery, new { name = groupName, group_id = groupId });
+                result = true;
             }
             return result;
         }
@@ -143,18 +110,13 @@ namespace WebSocketMessenger.Infrastructure.Data.Repositories
         {
             bool result = false;
             string updateQuery = "update public.user_group set role_id = @role_id where group_id = @group_id and user_id = @user_id";
-            try
+
+            using (var connection = _context.CreateConnection())
             {
-                using (var connection = _context.CreateConnection())
-                {
-                    await connection.ExecuteAsync(updateQuery, new { role_Id = roleId, group_id = groupId, user_id = userId });
-                    result = true;
-                }
+                await connection.ExecuteAsync(updateQuery, new { role_Id = roleId, group_id = groupId, user_id = userId });
+                result = true;
             }
-            catch (Exception e)
-            {
-                _logger.LogWarning($"Cant update user group role: {e.Message}");
-            }
+
             return result;
         }
     }

@@ -1,4 +1,5 @@
-﻿using WebSockerMessenger.Core.Interfaces.Services;
+﻿using WebSockerMessenger.Core.Exceptions;
+using WebSockerMessenger.Core.Interfaces.Services;
 using WebSockerMessenger.Core.Models;
 using WebSocketMessenger.Core.Interfaces.Repositories;
 
@@ -17,7 +18,7 @@ namespace WebSocketMessenger.UseCases.Services
         {
             if(!await _groupRepository.IsGroupMember(userId, groupId))
             {
-                throw new Exception("User not member of the group");
+                throw new SharedException("User not member of the group", 403);
             }
             return from message in await _messageRepository.GetGroupMessagesAsync(groupId) select message.Id;
         }
@@ -27,7 +28,7 @@ namespace WebSocketMessenger.UseCases.Services
             Message? message = await _messageRepository.GetMessageByIdAsync(messageId);
             if(message == null)
             {
-                throw new Exception("Message not found");
+                throw new SharedException("Message not found", 400);
             }
             else
             {
@@ -36,7 +37,7 @@ namespace WebSocketMessenger.UseCases.Services
                 }
                 else
                 {
-                    throw new Exception("Not access for this message");
+                    throw new SharedException("Not access for this message", 403);
                 }
             }
         }

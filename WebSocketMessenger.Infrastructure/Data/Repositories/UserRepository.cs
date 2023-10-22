@@ -9,47 +9,36 @@ namespace WebSocketMessenger.Infrastructure.Data.Repositories
     {
         private readonly ApplicationContext _context;
         private readonly ILogger<IUserRepository> _logger;
-        public UserRepository(ApplicationContext context, ILogger<IUserRepository> logger) {
+        public UserRepository(ApplicationContext context, ILogger<IUserRepository> logger)
+        {
             _logger = logger;
             _context = context;
         }
         public async Task<bool> CreateUserAsync(User user)
         {
-          
+
             string insertQuery = "insert into public.user (id, name, surname, username, email, password) values" +
                 "(@Id, @Name, @Surname, @UserName, @Email, @Password);";
-            try
-            {
-                using(var connection = _context.CreateConnection())
-                {
-                    await connection.ExecuteAsync(insertQuery, user);
-                }
 
-            }
-            catch (Exception)
+            using (var connection = _context.CreateConnection())
             {
-                _logger.LogWarning($"Cant insert new user: {user}");
-                return false;
+                await connection.ExecuteAsync(insertQuery, user);
             }
+
+
             return true;
-            
+
         }
 
         public async Task<bool> DeleteUserAsync(Guid id)
         {
             string deleteQuery = "delete from public.user where id = @id";
-            try
+
+            using (var connection = _context.CreateConnection())
             {
-                using(var connection = _context.CreateConnection())
-                {
-                    await connection.ExecuteAsync(deleteQuery, new { id = id });
-                }
+                await connection.ExecuteAsync(deleteQuery, new { id = id });
             }
-            catch (Exception)
-            {
-                _logger.LogWarning($"Cant delete user with id : {id}");
-                return false;
-            }
+
             return true;
         }
 
@@ -57,17 +46,12 @@ namespace WebSocketMessenger.Infrastructure.Data.Repositories
         {
             string selectQuery = "select * from public.user where email = @email";
             User? user = null;
-            try
+
+            using (var connection = _context.CreateConnection())
             {
-                using(var connection = _context.CreateConnection())
-                {
-                    user = await connection.QuerySingleOrDefaultAsync<User>(selectQuery, new { email = email });
-                }
+                user = await connection.QuerySingleOrDefaultAsync<User>(selectQuery, new { email = email });
             }
-            catch (Exception)
-            {
-                _logger.LogWarning($"Cant find user with email : {email}");
-            }
+
             return user;
         }
 
@@ -75,17 +59,12 @@ namespace WebSocketMessenger.Infrastructure.Data.Repositories
         {
             string selectQuery = "select * from public.user where id = @id";
             User? user = null;
-            try
+
+            using (var connection = _context.CreateConnection())
             {
-                using (var connection = _context.CreateConnection())
-                {
-                    user = await connection.QuerySingleOrDefaultAsync<User>(selectQuery, new { id = id });
-                }
+                user = await connection.QuerySingleOrDefaultAsync<User>(selectQuery, new { id = id });
             }
-            catch (Exception)
-            {
-                _logger.LogWarning($"Cant find user with id : {id}");
-            }
+
             return user;
         }
 
@@ -93,17 +72,12 @@ namespace WebSocketMessenger.Infrastructure.Data.Repositories
         {
             string selectQuery = "select * from public.user where username = @username";
             User? user = null;
-            try
+
+            using (var connection = _context.CreateConnection())
             {
-                using (var connection = _context.CreateConnection())
-                {
-                    user = await connection.QuerySingleOrDefaultAsync<User>(selectQuery, new { username = username });
-                }
+                user = await connection.QuerySingleOrDefaultAsync<User>(selectQuery, new { username = username });
             }
-            catch (Exception)
-            {
-                _logger.LogWarning($"Cant find user with username : {username}");
-            }
+
             return user;
         }
 
@@ -113,18 +87,12 @@ namespace WebSocketMessenger.Infrastructure.Data.Repositories
                 "username = @Username," +
                 "email = @Email," +
                 "password=  @Password where id = @Id";
-            try
+
+            using (var connection = _context.CreateConnection())
             {
-                using (var connection = _context.CreateConnection())
-                {
-                    await connection.QuerySingleOrDefaultAsync<User>(updateQuery, user);
-                }
+                await connection.QuerySingleOrDefaultAsync<User>(updateQuery, user);
             }
-            catch (Exception)
-            {
-                _logger.LogError($"Cant update user with new data: {user}");
-                return false;
-            }
+
             return true;
 
         }
@@ -132,18 +100,13 @@ namespace WebSocketMessenger.Infrastructure.Data.Repositories
         {
             string selectQuery = "select * from public.user where username = @username";
             User? user = null;
-            try
+
+            using (var connection = _context.CreateConnection())
             {
-                using (var connection = _context.CreateConnection())
-                {
-                    user = await connection.QuerySingleOrDefaultAsync<User>(selectQuery, new { username = username });
-                }
+                user = await connection.QuerySingleOrDefaultAsync<User>(selectQuery, new { username = username });
             }
-            catch
-            {
-                _logger.LogWarning($"Login error");
-            }
-            return user; 
+
+            return user;
         }
 
     }

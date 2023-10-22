@@ -8,6 +8,7 @@ builder.Services.AddWebSocketConnectionManager<InMemoryWebSocketConnectionManage
 builder.Services.AddUseCases();
 builder.Services.AddAuth(builder.Configuration);
 var app = builder.Build();
+app.UseMyExceptionHandler();
 app.UseWebSockets();
 app.UseWebSocketServer();
 app.CreateMigrations("messenger");
