@@ -81,6 +81,26 @@ namespace WebSocketMessenger.Infrastructure.Data.Repositories
             return result;
         }
 
+        public async Task<bool> IsGroupMember(Guid userId, Guid groupId)
+        {
+            Guid id = Guid.Empty;
+            string selectQuery = "select group_id from public.user_group where group_id = @group_id and user_id = @user_id;";
+            try
+            {
+                using (var connection = _context.CreateConnection())
+                {
+                    id = await connection.QueryFirstOrDefaultAsync<Guid>(selectQuery, new { group_id = groupId, user_id = userId });
+                    return id != Guid.Empty;
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogWarning($"Cant find group: {e.Message}");
+                return false;
+            }
+            return false;
+        }
+
         public async Task<bool> KickUserFromGroupAsync(Guid groupId, Guid userId)
         {
             bool result = false;

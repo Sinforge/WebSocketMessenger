@@ -8,6 +8,7 @@ namespace WebSocketMessenger.API.Extentions
         public static void AddUseCases(this IServiceCollection services)
         {
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IMessageService, MessageService>();
         }
     }
 }

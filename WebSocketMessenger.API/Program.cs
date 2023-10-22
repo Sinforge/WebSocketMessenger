@@ -11,5 +11,9 @@ var app = builder.Build();
 app.UseWebSockets();
 app.UseWebSocketServer();
 app.CreateMigrations("messenger");
-app.MapControllers();
+app.MapControllerRoute(
+    name: "default",
+    pattern: "api/{controller}");
+app.UseAuthentication();
+app.UseAuthorization();
 app.Run();

@@ -12,8 +12,8 @@ using WebSockerMessenger.Core.Models;
 
 namespace WebSocketMessenger.API.Controllers
 {
+    [Route("api/[controller]")]
     [ApiController]
-    [Route("/api/user")]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -25,7 +25,7 @@ namespace WebSocketMessenger.API.Controllers
 
 
         [HttpPost]
-        [Route("/registration")]
+        [Route("registration")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Registration([FromBody] UserDTO userDTO)
@@ -43,7 +43,7 @@ namespace WebSocketMessenger.API.Controllers
         }
 
         [HttpGet]
-        [Route("/authorize")]
+        [Route("authorize")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Authorize([FromBody] LoginDTO loginDTO)
@@ -51,26 +51,15 @@ namespace WebSocketMessenger.API.Controllers
             User? user = await _userService.CheckUserCredentials(loginDTO.Login, loginDTO.Password);
             if (user != null)
             {
-                JwtResponse token =  CreateToken(user);
+                JwtResponse token = CreateToken(user);
                 return Ok(token);
             }
             else
             {
                 return BadRequest();
             }
-        
+
         }
-
-
-        [HttpGet]
-        [Route("/{id}")]
-        [Authorize]
-        public async Task<User> GetUserByIdAsync([FromRoute] Guid id)
-        {
-            return null;
-        }
-
-
         [NonAction]
         private JwtResponse CreateToken(User user)
         {

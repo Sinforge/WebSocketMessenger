@@ -7,5 +7,7 @@ namespace WebSocketMessenger.Core.Interfaces.Repositories
         Task<bool> UpdateMessageAsync(int messageId, string Content, int contentType);
         Task<bool> DeleteMessageAsync(int messageId);
         Task<Message?> GetMessageByIdAsync(int messageId);
+        Task<IEnumerable<Message>> GetConversationMessagesAsync(Guid userId1, Guid userid2);
+        Task<IEnumerable<Message>> GetGroupMessagesAsync(Guid groupId);
     }
 }

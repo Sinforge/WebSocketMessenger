@@ -55,6 +55,45 @@ namespace WebSocketMessenger.Infrastructure.Data.Repositories
 
         }
 
+        public async Task<IEnumerable<Message>> GetConversationMessagesAsync(Guid userId1, Guid userId2)
+        {
+            IEnumerable<Message> result = new LinkedList<Message>();
+            string selectQuery = "select * from public.message where " +
+                "(\"ReceiverId\" = @userId1 and \"SenderId\" = @userId2) or" +
+                "(\"ReceiverId\" = @userId2 and \"SenderId\" = @userId1); ";
+            try
+            {
+                using (var connection = _context.CreateConnection())
+                {
+                    result = await connection.QueryAsync<Message>(selectQuery, new { userId1 = userId1, userId2 = userId2 });
+                }
+            }
+            catch(Exception e)
+            {
+                _logger.LogWarning($"Cant found messages of users: {userId1} and {userId2} - {e.Message}");
+            }
+            return result;
+        }
+
+        public async Task<IEnumerable<Message>> GetGroupMessagesAsync(Guid groupId)
+        {
+            IEnumerable<Message> result = new LinkedList<Message>();
+            string selectQuery = "select * from public.message where " +
+                "\"ReceiverId\" = @groupId;";
+            try
+            {
+                using (var connection = _context.CreateConnection())
+                {
+                    result = await connection.QueryAsync<Message>(selectQuery, new { groupId = groupId });
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogWarning($"Cant found messages of group : {groupId} - {e.Message}");
+            }
+            return result;
+        }
+
         public async Task<Message?> GetMessageByIdAsync(int messageId)
         {
             Message result = null;

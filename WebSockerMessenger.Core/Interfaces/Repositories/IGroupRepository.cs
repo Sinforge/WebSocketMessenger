@@ -8,5 +8,7 @@
         public Task<bool> UpdateUserGroupRoleAsync(Guid grouId, Guid userId, int roleId);
         public Task<bool> AddUserToGroupAsync(Guid groupId, Guid userId);
         public Task<IEnumerable<Guid>> GetUserIdsByGroupAsync(Guid groupId);
+
+        public Task<bool> IsGroupMember(Guid userId, Guid groupId);
     }
 }
