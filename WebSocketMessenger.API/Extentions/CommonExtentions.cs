@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using WebSockerMessenger.Core.Configuration;
+using WebSocketMessenger.Core.Configuration;
 
 namespace WebSocketMessenger.API.Extentions
 {

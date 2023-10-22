@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Net;
 using System.Net.WebSockets;
-using WebSockerMessenger.Core.Interfaces.WS;
+using WebSocketMessenger.Core.Interfaces.WS;
 
 namespace WebSocketMessenger.API.Middleware
 {

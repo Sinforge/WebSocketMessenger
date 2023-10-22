@@ -1,5 +1,4 @@
-﻿using WebSockerMessenger.Core.Exceptions;
-using WebSockerMessenger.Core.Models;
+﻿using WebSocketMessenger.Core.Exceptions;
 
 namespace WebSocketMessenger.API.Middleware
 {

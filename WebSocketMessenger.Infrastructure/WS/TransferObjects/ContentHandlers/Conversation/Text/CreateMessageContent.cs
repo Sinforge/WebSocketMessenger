@@ -1,9 +1,8 @@
 ﻿using Newtonsoft.Json;
-using System.Net.WebSockets;
 using System.Text;
-using WebSockerMessenger.Core.Interfaces.WS;
-using WebSockerMessenger.Core.Models;
-using WebSockerMessenger.Infrastructure.TransferObjets.Base;
+using WebSocketMessenger.Core.Interfaces.WS;
+using WebSocketMessenger.Core.Models;
+using WebSocketMessenger.Infrastructure.TransferObjets.Base;
 
 namespace WebSocketMessenger.Infrastructure.WS.TransferObjects.ContentHandlers.Conversation.Text
 

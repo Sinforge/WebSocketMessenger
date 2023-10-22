@@ -1,6 +1,5 @@
-﻿using System.Collections.Concurrent;
-using System.Net.WebSockets;
-namespace WebSockerMessenger.Core.Interfaces.WS
+﻿using System.Net.WebSockets;
+namespace WebSocketMessenger.Core.Interfaces.WS
 {
     public interface IWebSocketConnectionManager
     {

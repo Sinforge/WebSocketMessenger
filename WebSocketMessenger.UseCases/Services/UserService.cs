@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using WebSockerMessenger.Core.Interfaces.Services;
-using WebSockerMessenger.Core.Models;
+using WebSocketMessenger.Core.Interfaces.Services;
+using WebSocketMessenger.Core.Models;
 using WebSocketMessenger.Core.Interfaces.Repositories;
 
 namespace WebSocketMessenger.UseCases.Services

@@ -1,10 +1,7 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Concurrent;
-using System.Net.Sockets;
+﻿using System.Collections.Concurrent;
 using System.Net.WebSockets;
-using System.Text;
-using WebSockerMessenger.Core.Interfaces.WS;
 using WebSocketMessenger.Core.Interfaces.Repositories;
+using WebSocketMessenger.Core.Interfaces.WS;
 
 namespace WebSocketMessenger.Infrastructure.WS
 {

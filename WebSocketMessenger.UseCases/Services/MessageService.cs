@@ -1,7 +1,7 @@
-﻿using WebSockerMessenger.Core.Exceptions;
-using WebSockerMessenger.Core.Interfaces.Services;
-using WebSockerMessenger.Core.Models;
+﻿using WebSocketMessenger.Core.Exceptions;
 using WebSocketMessenger.Core.Interfaces.Repositories;
+using WebSocketMessenger.Core.Interfaces.Services;
+using WebSocketMessenger.Core.Models;
 
 namespace WebSocketMessenger.UseCases.Services
 {

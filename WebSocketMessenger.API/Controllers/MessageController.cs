@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using WebSockerMessenger.Core.Interfaces.Services;
+using WebSocketMessenger.Core.Interfaces.Services;
 
 namespace WebSocketMessenger.API.Controllers
 {

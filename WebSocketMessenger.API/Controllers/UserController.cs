@@ -1,14 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using WebSockerMessenger.Core.Configuration;
-using WebSockerMessenger.Core.DTOs;
-using WebSockerMessenger.Core.Interfaces.Services;
-using WebSockerMessenger.Core.Models;
+using WebSocketMessenger.Core.Configuration;
+using WebSocketMessenger.Core.DTOs;
+using WebSocketMessenger.Core.Interfaces.Services;
+using WebSocketMessenger.Core.Models;
 
 namespace WebSocketMessenger.API.Controllers
 {

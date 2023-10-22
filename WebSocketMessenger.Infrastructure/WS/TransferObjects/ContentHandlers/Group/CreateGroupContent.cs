@@ -1,7 +1,6 @@
-﻿using System.Net.WebSockets;
-using System.Text;
-using WebSockerMessenger.Core.Interfaces.WS;
-using WebSockerMessenger.Infrastructure.TransferObjets.Base;
+﻿using System.Text;
+using WebSocketMessenger.Core.Interfaces.WS;
+using WebSocketMessenger.Infrastructure.TransferObjets.Base;
 
 namespace WebSocketMessenger.Infrastructure.WS.TransferObjects.ContentHandlers.Group
 {

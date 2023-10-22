@@ -1,5 +1,5 @@
-﻿using WebSockerMessenger.Core.Models;
-namespace WebSockerMessenger.Core.Interfaces.Services
+﻿using WebSocketMessenger.Core.Models;
+namespace WebSocketMessenger.Core.Interfaces.Services
 {
     public interface IUserService
     {

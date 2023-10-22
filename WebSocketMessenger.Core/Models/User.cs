@@ -1,5 +1,5 @@
 ﻿
-namespace WebSockerMessenger.Core.Models
+namespace WebSocketMessenger.Core.Models
 {
     public class User
     {

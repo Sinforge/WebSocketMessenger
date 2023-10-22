@@ -1,4 +1,4 @@
-﻿namespace WebSockerMessenger.Core.Configuration
+﻿namespace WebSocketMessenger.Core.Configuration
 {
     public class Audience
     {

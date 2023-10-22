@@ -1,5 +1,5 @@
-﻿using WebSocketMessenger.UseCases.Services;
-using WebSockerMessenger.Core.Interfaces.Services;
+﻿using WebSocketMessenger.Core.Interfaces.Services;
+using WebSocketMessenger.UseCases.Services;
 
 namespace WebSocketMessenger.API.Extentions
 {

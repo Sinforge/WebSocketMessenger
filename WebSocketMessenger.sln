@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebSocketMessenger.API", "W
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebSocketMessenger.Infrastructure", "WebSocketMessenger.Infrastructure\WebSocketMessenger.Infrastructure.csproj", "{E594903E-D1AD-4D73-BCD2-7FA28B6B09F8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebSocketMessenger.Core", "WebSockerMessenger.Core\WebSocketMessenger.Core.csproj", "{D3094D49-A648-4593-8E27-78BC846CF78F}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebSocketMessenger.UseCases", "WebSocketMessenger.UseCases\WebSocketMessenger.UseCases.csproj", "{8665E2E2-AB73-4CEB-AC9C-703667277A14}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebSocketMessenger.Core", "WebSocketMessenger.Core\WebSocketMessenger.Core.csproj", "{0847ACE3-5B61-4DD6-8643-C1FF74C7DA27}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,14 +25,14 @@ Global
 		{E594903E-D1AD-4D73-BCD2-7FA28B6B09F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E594903E-D1AD-4D73-BCD2-7FA28B6B09F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E594903E-D1AD-4D73-BCD2-7FA28B6B09F8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D3094D49-A648-4593-8E27-78BC846CF78F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D3094D49-A648-4593-8E27-78BC846CF78F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D3094D49-A648-4593-8E27-78BC846CF78F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D3094D49-A648-4593-8E27-78BC846CF78F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8665E2E2-AB73-4CEB-AC9C-703667277A14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8665E2E2-AB73-4CEB-AC9C-703667277A14}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8665E2E2-AB73-4CEB-AC9C-703667277A14}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8665E2E2-AB73-4CEB-AC9C-703667277A14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0847ACE3-5B61-4DD6-8643-C1FF74C7DA27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0847ACE3-5B61-4DD6-8643-C1FF74C7DA27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0847ACE3-5B61-4DD6-8643-C1FF74C7DA27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0847ACE3-5B61-4DD6-8643-C1FF74C7DA27}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

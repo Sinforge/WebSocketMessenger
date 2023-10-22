@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WebSockerMessenger.Core\WebSocketMessenger.Core.csproj" />
+    <ProjectReference Include="..\WebSocketMessenger.Core\WebSocketMessenger.Core.csproj" />
   </ItemGroup>
 
 </Project>

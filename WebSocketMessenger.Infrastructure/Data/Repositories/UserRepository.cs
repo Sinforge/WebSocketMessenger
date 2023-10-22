@@ -1,7 +1,7 @@
 ﻿using Dapper;
 using Microsoft.Extensions.Logging;
-using WebSockerMessenger.Core.Models;
 using WebSocketMessenger.Core.Interfaces.Repositories;
+using WebSocketMessenger.Core.Models;
 
 namespace WebSocketMessenger.Infrastructure.Data.Repositories
 {

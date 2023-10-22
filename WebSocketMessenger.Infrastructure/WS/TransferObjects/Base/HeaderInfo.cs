@@ -1,4 +1,4 @@
-﻿namespace WebSockerMessenger.Infrastructure.TransferObjets.Base
+﻿namespace WebSocketMessenger.Infrastructure.TransferObjets.Base
 {
     public class HeaderInfo
     {

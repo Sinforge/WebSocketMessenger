@@ -1,4 +1,4 @@
-﻿using WebSockerMessenger.Core.Models;
+﻿using WebSocketMessenger.Core.Models;
 namespace WebSocketMessenger.Core.Interfaces.Repositories
 {
     public interface IMessageRepository

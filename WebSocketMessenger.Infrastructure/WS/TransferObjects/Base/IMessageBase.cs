@@ -1,8 +1,7 @@
-﻿
-using WebSockerMessenger.Core.Interfaces.WS;
+﻿using WebSocketMessenger.Core.Interfaces.WS;
 using WebSocketMessenger.Infrastructure.WS.TransferObjects;
 
-namespace WebSockerMessenger.Infrastructure.TransferObjets.Base
+namespace WebSocketMessenger.Infrastructure.TransferObjets.Base
 {
     public interface IMessageBase<out T>
         where T : MessageContentBase

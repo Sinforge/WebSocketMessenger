@@ -1,5 +1,5 @@
-﻿using WebSockerMessenger.Core.Interfaces.WS;
-using WebSocketMessenger.API.Middleware;
+﻿using WebSocketMessenger.API.Middleware;
+using WebSocketMessenger.Core.Interfaces.WS;
 using WebSocketMessenger.Infrastructure.WS;
 
 namespace WebSocketMessenger.API.Extentions
