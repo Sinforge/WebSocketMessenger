@@ -13,9 +13,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\vladv\\source\\repos\\WebSocketMessenger\\WebSockerMessenger.Core\\WebSockerMessenger.Core.csproj",
-      "projectName": "WebSockerMessenger.Core",
-      "projectPath": "C:\\Users\\vladv\\source\\repos\\WebSocketMessenger\\WebSockerMessenger.Core\\WebSockerMessenger.Core.csproj",
+      "projectUniqueName": "C:\\Users\\vladv\\source\\repos\\WebSocketMessenger\\WebSockerMessenger.Core\\WebSocketMessenger.Core.csproj",
+      "projectName": "WebSocketMessenger.Core",
+      "projectPath": "C:\\Users\\vladv\\source\\repos\\WebSocketMessenger\\WebSockerMessenger.Core\\WebSocketMessenger.Core.csproj",
       "packagesPath": "C:\\Users\\vladv\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\vladv\\source\\repos\\WebSocketMessenger\\WebSockerMessenger.Core\\obj\\",
       "projectStyle": "PackageReference",

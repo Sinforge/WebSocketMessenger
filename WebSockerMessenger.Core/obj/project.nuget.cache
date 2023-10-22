@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "mbiKlkl/LVZWtC7z8q1t9T1SSBDO+mwrQSQvIMtR0Di1RSW72ptyptra0sXQWjmsbKVdHvI4bEhkUjYKAaVn6g==",
+  "dgSpecHash": "FvDfXzaoQvWQXA3EcRK9TSUKSmI5ANNmZdNeFszo4RnTVDGwbSWPxynuIWrPf5zM5fLX1uJown6aUvdQ/bSnig==",
   "success": true,
-  "projectFilePath": "C:\\Users\\vladv\\source\\repos\\WebSocketMessenger\\WebSockerMessenger.Core\\WebSockerMessenger.Core.csproj",
+  "projectFilePath": "C:\\Users\\vladv\\source\\repos\\WebSocketMessenger\\WebSockerMessenger.Core\\WebSocketMessenger.Core.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
