@@ -14,7 +14,7 @@ namespace WebSocketMessenger.Infrastructure.Data.Migrations
 
         public override void Up()
         {
-            Execute.Sql("create public.table group_role(" +
+            Execute.Sql("create table public.group_role(" +
                 "id int primary key not null," +
                 "name varchar(30) not null" +
                 ");");

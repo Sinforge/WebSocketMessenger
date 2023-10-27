@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebSocketMessenger.UseCases
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebSocketMessenger.Core", "WebSocketMessenger.Core\WebSocketMessenger.Core.csproj", "{0847ACE3-5B61-4DD6-8643-C1FF74C7DA27}"
 EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{886D88B3-B158-4010-98AB-F94C92099A99}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{0847ACE3-5B61-4DD6-8643-C1FF74C7DA27}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0847ACE3-5B61-4DD6-8643-C1FF74C7DA27}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0847ACE3-5B61-4DD6-8643-C1FF74C7DA27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{886D88B3-B158-4010-98AB-F94C92099A99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{886D88B3-B158-4010-98AB-F94C92099A99}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{886D88B3-B158-4010-98AB-F94C92099A99}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{886D88B3-B158-4010-98AB-F94C92099A99}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
