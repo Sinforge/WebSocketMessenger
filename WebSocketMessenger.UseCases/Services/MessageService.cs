@@ -2,6 +2,7 @@
 using WebSocketMessenger.Core.Interfaces.Repositories;
 using WebSocketMessenger.Core.Interfaces.Services;
 using WebSocketMessenger.Core.Models;
+using WebSocketMessenger.Infrastructure.FileSystem;
 
 namespace WebSocketMessenger.UseCases.Services
 {
@@ -23,7 +24,7 @@ namespace WebSocketMessenger.UseCases.Services
             return from message in await _messageRepository.GetGroupMessagesAsync(groupId) select message.Id;
         }
 
-        public async Task<string> GetMessageByIdAsync(int messageId, Guid userId)
+        public async Task<MessageDTO> GetMessageByIdAsync(int messageId, Guid userId)
         {
             Message? message = await _messageRepository.GetMessageByIdAsync(messageId);
             if(message == null)
@@ -32,8 +33,18 @@ namespace WebSocketMessenger.UseCases.Services
             }
             else
             {
+                MessageDTO messageDTO = new MessageDTO();
+                messageDTO.Type = message.MessageContentType;
                 if(message.SenderId == userId || message.ReceiverId == userId) {
-                    return message.Content;
+                    if(message.MessageContentType == 2)
+                    {
+                        messageDTO.Message = FileManager.GetBase64StringByFileName(message.Content);
+                    }
+                    else
+                    {
+                        messageDTO.Message = message.Content;
+                    }
+                    return messageDTO;
                 }
                 else
                 {
@@ -42,7 +53,8 @@ namespace WebSocketMessenger.UseCases.Services
             }
         }
 
-        public async Task<IEnumerable<int>> GetMessagesByUsers(Guid userId1, Guid userId2)
+
+            public async Task<IEnumerable<int>> GetMessagesByUsers(Guid userId1, Guid userId2)
         {
             return from message in await _messageRepository.GetConversationMessagesAsync(userId1, userId2) select message.Id;
 

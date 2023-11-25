@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using WebSocketMessenger.Core.Interfaces.Services;
+using WebSocketMessenger.Core.Models;
 
 namespace WebSocketMessenger.API.Controllers
 {
@@ -38,7 +39,7 @@ namespace WebSocketMessenger.API.Controllers
         [HttpGet("{messageId}")]
         [ProducesResponseType(typeof(string), 200)]
         [ProducesResponseType(401)]
-        public async Task<string> GetMessageById([FromRoute] int messageId)
+        public async Task<MessageDTO> GetMessageById([FromRoute] int messageId)
         {
             Guid clientId = GetUserIdFromClaims();
             return await _messageService.GetMessageByIdAsync(messageId, clientId);

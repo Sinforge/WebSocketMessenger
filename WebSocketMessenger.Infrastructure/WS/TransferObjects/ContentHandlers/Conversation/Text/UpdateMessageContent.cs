@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Text.Json;
 using WebSocketMessenger.Core.Interfaces.WS;
 using WebSocketMessenger.Core.Models;
 using WebSocketMessenger.Infrastructure.FileSystem;
@@ -24,7 +25,12 @@ namespace WebSocketMessenger.Infrastructure.WS.TransferObjects.ContentHandlers.C
                 await repositoryCollection.MessageRepository.UpdateMessageAsync(MessageId, NewContent, 1);
                 
             }
-            _ = connectionManager.NotifySocketsAsync(header.To.ToString(), Encoding.UTF8.GetBytes(MessageId.ToString()), header.Type);
+            _ = connectionManager.NotifySocketsAsync(header.To.ToString(), Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new
+            {
+                messageType="update",
+                newContent=NewContent,
+                messageId = MessageId
+            })), header.Type);
             
         }
     }

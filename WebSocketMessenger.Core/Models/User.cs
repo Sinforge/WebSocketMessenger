@@ -3,7 +3,7 @@ namespace WebSocketMessenger.Core.Models
 {
     public class User
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
         public string Name { get; set; } = null!;
         public string Surname { get; set; } = null!;
         public string UserName { get; set; } = null!;

@@ -22,6 +22,15 @@
 
             }
         }
+        public static string GetBase64StringByFileName(string fileName)
+        {
+            string fullPath = Path.Combine(UPLOAD_PATH, fileName);
+            if (File.Exists(fullPath))
+            {
+                return Convert.ToBase64String(File.ReadAllBytes(fullPath));
+            }
+            return "unknown file";
+        }
 
     }
 }
