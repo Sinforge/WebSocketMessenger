@@ -13,6 +13,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebSocketMessenger.Core", "
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{886D88B3-B158-4010-98AB-F94C92099A99}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{80218B8B-6C69-4F5D-9BC7-56218A01CCDD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UseCasesTest", "..\UseCasesTest\UseCasesTest.csproj", "{73C41D2E-7913-40BE-940D-C2A73DEEF34B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,9 +43,16 @@ Global
 		{886D88B3-B158-4010-98AB-F94C92099A99}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{886D88B3-B158-4010-98AB-F94C92099A99}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{886D88B3-B158-4010-98AB-F94C92099A99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73C41D2E-7913-40BE-940D-C2A73DEEF34B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73C41D2E-7913-40BE-940D-C2A73DEEF34B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73C41D2E-7913-40BE-940D-C2A73DEEF34B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73C41D2E-7913-40BE-940D-C2A73DEEF34B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{73C41D2E-7913-40BE-940D-C2A73DEEF34B} = {80218B8B-6C69-4F5D-9BC7-56218A01CCDD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {12D7703E-BBCF-4C9E-A19C-59A8956FC7F1}
