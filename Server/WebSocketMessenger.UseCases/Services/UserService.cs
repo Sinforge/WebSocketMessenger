@@ -2,6 +2,7 @@
 using WebSocketMessenger.Core.Interfaces.Services;
 using WebSocketMessenger.Core.Models;
 using WebSocketMessenger.Core.Interfaces.Repositories;
+using WebSocketMessenger.Core.Dtos;
 
 namespace WebSocketMessenger.UseCases.Services
 {
@@ -68,6 +69,11 @@ namespace WebSocketMessenger.UseCases.Services
                 return user;
             }
 
+        }
+
+        public async Task<IEnumerable<SearchUserDto>> FindUserByNameAsync(string name)
+        {
+            return await _userRepository.FindUserByNameAsync(name);
         }
     }
 }

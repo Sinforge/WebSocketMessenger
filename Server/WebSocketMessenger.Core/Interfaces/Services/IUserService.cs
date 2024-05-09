@@ -1,4 +1,5 @@
-﻿using WebSocketMessenger.Core.Models;
+﻿using WebSocketMessenger.Core.Dtos;
+using WebSocketMessenger.Core.Models;
 namespace WebSocketMessenger.Core.Interfaces.Services
 {
     public interface IUserService
@@ -15,5 +16,7 @@ namespace WebSocketMessenger.Core.Interfaces.Services
         public Task<User?> FindUserByUsernameAsync(string username);
 
         public Task<User?> CheckUserCredentials(string login, string password);
+
+        public Task<IEnumerable<SearchUserDto>> FindUserByNameAsync(string name);
     }
 }

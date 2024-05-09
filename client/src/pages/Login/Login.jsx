@@ -3,10 +3,46 @@ import Typography from "@mui/material/Typography"
 import Box from '@mui/material/Box'
 import TextField from "@mui/material/TextField"
 import Button from "@mui/material/Button"
+import { authorizeUser } from "../../services/user.service"
+import { useNavigate } from "react-router-dom"
+import { AuthContext } from "../../providers/AuthProvider";
+import  Cookies from 'js-cookie'
+import { useContext } from "react";
+import { toast } from "react-toastify";
 function Login() {
+    const navigate = useNavigate();
+    const [user, setUser] = useContext(AuthContext);
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+
+        let response = await authorizeUser({
+            Login : data.get("userName"),
+            Password: data.get("password")
+        });
+        if(response.status === 200) {
+            //errorMessage.current = ""
+            setUser({...user, access_token :response.data.access_token});
+            Cookies.set("access_token", response.data.access_token)
+            console.log(response.data);
+            navigate("/")
+
+            //console.log(user.access_token)
+        }
+        else {
+            console.log("Error")
+            //errorMessage.current = "Incorrect credentials"
+
+        }
+
+        // registerUser(data);
+        // navigate("/")
+    }
+    const notify = () => toast.success('Toast Notification!');
+
+    
     return(
-        //<div>test</div>
-        <Box  sx={{
+        <Box  component='form' onSubmit={handleSubmit} sx={{
             marginTop: 8,
             display: 'flex',
             flexDirection: 'column',
@@ -20,10 +56,10 @@ function Login() {
                 margin="normal"
                 required
                 fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
+                id="userName"
+                label="Username"
+                name="userName"
+                autoComplete="userName"
                 autoFocus
                 />
                 <TextField
@@ -45,6 +81,7 @@ function Login() {
                 >
                 Sign In
                 </Button>
+                <Button onClick={notify}>Toast test</Button>
             </Box>
             
             

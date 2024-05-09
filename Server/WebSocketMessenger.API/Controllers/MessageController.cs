@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Net;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using WebSocketMessenger.Core.Dtos;
 using WebSocketMessenger.Core.Interfaces.Services;
 using WebSocketMessenger.Core.Models;
+using WebSocketMessenger.Infrastructure.FileSystem;
 
 namespace WebSocketMessenger.API.Controllers
 {
@@ -21,10 +24,17 @@ namespace WebSocketMessenger.API.Controllers
         [HttpGet("conversation/{userId}")]
         [ProducesResponseType(typeof(IEnumerable<Guid>), 200)]
         [ProducesResponseType(401)]
-        public async Task<IEnumerable<int>> GetConversationMessages([FromRoute] Guid userId)
+        public async Task<IEnumerable<MessageDto>> GetConversationMessages([FromRoute] Guid userId)
         {
             Guid clientId = GetUserIdFromClaims();
             return await _messageService.GetMessagesByUsers(clientId, userId);
+        }
+
+        [HttpGet("conversation")]
+        public async Task<IEnumerable<DialogItemDto>> GetUserDialogs()
+        {
+            Guid cliendId = GetUserIdFromClaims();
+            return await _messageService.GetUserDialogs(cliendId);
         }
         [HttpGet("group/{groupId}")]
         [ProducesResponseType(typeof(IEnumerable<Guid>), 200)]
@@ -46,6 +56,23 @@ namespace WebSocketMessenger.API.Controllers
 
         }
 
+
+        [HttpGet("file/{messageId}")]
+
+        public async Task GetFileByIdAsync([FromRoute] int messageId)
+        {
+            Guid clientId = GetUserIdFromClaims();
+            var message = await _messageService.GetMessageByIdAsync(messageId, clientId);
+            var file = FileManager.GetFileByFileName(message.Message);
+            var separatorIndex = message.Message.IndexOf('_');
+            var fileName = message.Message.Substring(separatorIndex + 1, message.Message.Length - separatorIndex - 1);
+            var encodedFileName = WebUtility.UrlEncode(fileName);
+
+            HttpContext.Response.Headers.ContentDisposition = $"attachment; filename={encodedFileName}";
+
+            await HttpContext.Response.SendFileAsync(file);
+            
+        }
 
 
 

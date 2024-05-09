@@ -1,4 +1,5 @@
-﻿using WebSocketMessenger.Core.Interfaces.WS;
+﻿using System.Net.WebSockets;
+using WebSocketMessenger.Core.Interfaces.WS;
 using WebSocketMessenger.Infrastructure.WS.TransferObjects;
 
 namespace WebSocketMessenger.Infrastructure.TransferObjets.Base

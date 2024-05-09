@@ -1,4 +1,5 @@
-﻿using WebSocketMessenger.Core.Exceptions;
+﻿using WebSocketMessenger.Core.Dtos;
+using WebSocketMessenger.Core.Exceptions;
 using WebSocketMessenger.Core.Interfaces.Repositories;
 using WebSocketMessenger.Core.Interfaces.Services;
 using WebSocketMessenger.Core.Models;
@@ -38,7 +39,7 @@ namespace WebSocketMessenger.UseCases.Services
                 if(message.SenderId == userId || message.ReceiverId == userId) {
                     if(message.MessageContentType == 2)
                     {
-                        messageDTO.Message = FileManager.GetBase64StringByFileName(message.Content);
+                        messageDTO.Message = message.Content;
                     }
                     else
                     {
@@ -54,10 +55,18 @@ namespace WebSocketMessenger.UseCases.Services
         }
 
 
-            public async Task<IEnumerable<int>> GetMessagesByUsers(Guid userId1, Guid userId2)
+            public async Task<IEnumerable<MessageDto>> GetMessagesByUsers(Guid userId1, Guid userId2)
         {
-            return from message in await _messageRepository.GetConversationMessagesAsync(userId1, userId2) select message.Id;
+            return from message in await _messageRepository.GetConversationMessagesAsync(userId1, userId2)
+                   select new MessageDto {Id = message.Id, AuthorId = message.SenderId, 
+                       Content = message.MessageContentType == 1 ? message.Content : message.Content.Substring(message.Content.IndexOf('_') + 1, message.Content.Length - message.Content.IndexOf('_') - 1),
+                       MessageContentType = message.MessageContentType, SendTime = message.SendTime };
 
+        }
+
+        public Task<IEnumerable<DialogItemDto>> GetUserDialogs(Guid userId)
+        {
+            return _messageRepository.GetUserDialogs(userId);
         }
     }
 }

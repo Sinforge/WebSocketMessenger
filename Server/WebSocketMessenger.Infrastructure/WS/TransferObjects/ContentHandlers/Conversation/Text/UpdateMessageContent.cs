@@ -25,11 +25,13 @@ namespace WebSocketMessenger.Infrastructure.WS.TransferObjects.ContentHandlers.C
                 await repositoryCollection.MessageRepository.UpdateMessageAsync(MessageId, NewContent, 1);
                 
             }
+
             _ = connectionManager.NotifySocketsAsync(header.To.ToString(), Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new
             {
-                messageType="update",
+                MessageType="UpdateMessage",
                 newContent=NewContent,
-                messageId = MessageId
+                id = MessageId,
+                senderId = currentMessage.SenderId
             })), header.Type);
             
         }

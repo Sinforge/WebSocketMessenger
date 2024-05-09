@@ -7,10 +7,28 @@ import Grid from "@mui/material/Grid"
 import Checkbox from "@mui/material/FormControlLabel"
 import Link from "@mui/material/Link"
 import FormControlLabel  from "@mui/material/FormControlLabel"
+import { registerUser } from "../../services/user.service"
+import { useNavigate } from "react-router-dom"
 const SignUp = () => {
+
+    const navigate = useNavigate();
+
+    const handleSubmit = async(event) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+        
+        await registerUser({
+            Name: data.get('firstName'),
+            Surname: data.get('lastName'),
+            Email: data.get('email'),
+            Password: data.get('password'),
+            UserName: data.get('username')
+        });
+        navigate("/signin");
+    }
     return(
         //<div>test</div>
-        <Box  sx={{
+        <Box component="form" onSubmit={handleSubmit} sx={{
             marginTop: 8,
             display: 'flex',
             flexDirection: 'column',
@@ -52,6 +70,18 @@ const SignUp = () => {
                     autoComplete="email"
                     />
                 </Grid>
+                <Grid item xs={12}>
+                    <TextField
+                    required
+                    fullWidth
+                    name="username"
+                    label="Username"
+                    type="username"
+                    id="username"
+                    autoComplete="username"
+                    />
+                </Grid>
+                <Grid item xs={12}></Grid>
                 <Grid item xs={12}>
                     <TextField
                     required

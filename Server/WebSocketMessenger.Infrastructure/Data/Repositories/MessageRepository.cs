@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Microsoft.Extensions.Logging;
+using WebSocketMessenger.Core.Dtos;
 using WebSocketMessenger.Core.Interfaces.Repositories;
 using WebSocketMessenger.Core.Models;
 
@@ -15,17 +16,14 @@ namespace WebSocketMessenger.Infrastructure.Data.Repositories
             _context = context;
         }
 
-        public async Task<bool> CreateMessageAsync(Message message)
+        public async Task<int> CreateMessageAsync(Message message)
         {
-            bool result = false;
+            int result = -1;
             string insertQuery = "insert into public.message (\"SenderId\", \"ReceiverId\", \"Content\", \"MessageType\", \"MessageContentType\", \"SendTime\") values" +
-                "(@SenderId, @ReceiverId, @Content, @MessageType, @MessageContentType, @SendTime);";
+                "(@SenderId, @ReceiverId, @Content, @MessageType, @MessageContentType, @SendTime) returning \"Id\";";
 
-            using (var connection = _context.CreateConnection())
-            {
-                await connection.ExecuteAsync(insertQuery, message);
-                result = true;
-            }
+            using var connection = _context.CreateConnection();
+            result = await connection.ExecuteScalarAsync<int>(insertQuery, message);
 
             return result;
         }
@@ -86,6 +84,51 @@ namespace WebSocketMessenger.Infrastructure.Data.Repositories
 
             return result;
         }
+
+        public async Task<IEnumerable<DialogItemDto>> GetUserDialogs(Guid userId)
+        {
+            IEnumerable<DialogItemDto> result = null;
+            try
+            {
+                result = new LinkedList<DialogItemDto>();
+                string selectQuery = "WITH RankedMessages AS (SELECT  \"LastMessage\",\r\n        \"UserName\",\r\n        \"UserId\",\r\n        ROW_NUMBER() OVER (PARTITION BY \"UserId\" ORDER BY \"LastMessage\" DESC) AS rn\r\n    FROM (\r\n        select MAX(m.\"SendTime\") as \"LastMessage\",\r\n            case\r\n                when m.\"ReceiverId\" = @id then u_sender.username\r\n                else u_receiver.username\r\n            end as \"UserName\",\r\n            case\r\n                when m.\"ReceiverId\" = @id then u_sender.id\r\n                else u_receiver.id\r\n            end as \"UserId\"\r\n        from public.message m\r\n        join public.user u_sender on m.\"SenderId\" = u_sender.id\r\n        join public.user u_receiver on m.\"ReceiverId\" = u_receiver.id\r\n        where (m.\"SenderId\" = @id or m.\"ReceiverId\" = @id)\r\n  " +
+                    "          and m.\"MessageType\" = 1\r\n        group by m.\"SenderId\", m.\"ReceiverId\", u_sender.username, u_receiver.username, u_sender.id, u_receiver.id\r\n    ) AS subquery\r\n)\r\nSELECT \"LastMessage\", \"UserName\", \"UserId\" as \"Id\"\r\nFROM RankedMessages\r\nWHERE rn = 1";
+
+                using (var connection = _context.CreateConnection())
+                {
+                    result = await connection.QueryAsync<DialogItemDto>(selectQuery, new { id = userId });
+                }
+            }
+            catch(Exception ex)
+            {
+
+            }
+            return result;
+
+        }
+
+        public async Task<Guid> GetMessageOwner(int messageId)
+        {
+            var selectQuery = "select \"SenderId\" from public.message where id = @id";
+            var result = Guid.Empty;
+            using (var connection = _context.CreateConnection())
+            {
+                result = await connection.QuerySingleOrDefaultAsync<Guid>(selectQuery, new { id = messageId });
+            }
+
+            return result;
+        }
+
+        public async Task<Guid> GetMessageReceiver(int messageId)
+        {
+            var selectQuery = "select \"ReceiverId\" from public.message where id = @id";
+            var result = Guid.Empty;
+            using (var connection = _context.CreateConnection())
+            {
+                result = await connection.QuerySingleOrDefaultAsync<Guid>(selectQuery, new { id = messageId });
+            }
+
+            return result;        }
 
         public async Task<bool> UpdateMessageAsync(int messageId, string content, int contentType)
         {

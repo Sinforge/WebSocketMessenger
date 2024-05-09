@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Microsoft.Extensions.Logging;
+using WebSocketMessenger.Core.Dtos;
 using WebSocketMessenger.Core.Interfaces.Repositories;
 using WebSocketMessenger.Core.Models;
 
@@ -109,5 +110,50 @@ namespace WebSocketMessenger.Infrastructure.Data.Repositories
             return user;
         }
 
+        public async Task<IEnumerable<SearchUserDto>> FindUserByNameAsync(string name)
+        {
+            string selectQuery = "select id as \"Id\", name as \"Name\", surname as \"LastName\", email as \"Email\", username as \"Username\" from public.user where username ilike @name or surname ilike @name or username ilike @name or concat(name, ' ', surname) ilike @name";
+
+            IEnumerable<SearchUserDto> users = Enumerable.Empty<SearchUserDto>();
+
+            try
+            {
+                using (var connection = _context.CreateConnection())
+                {
+                    users = await connection.QueryAsync<SearchUserDto>(selectQuery, new { name = "%"+ name + "%" });
+                }
+            }
+            catch(Exception ex)
+            {
+
+            }
+
+           
+
+            return users;
+        }
+
+        public async Task<string> GetUsernameByIdAsync(Guid id)
+        {
+            string selectQuery = "select username from public.user where id=@id";
+
+            var result = string.Empty;
+
+            try
+            {
+                using (var connection = _context.CreateConnection())
+                {
+                    result = await connection.QuerySingleOrDefaultAsync<string>(selectQuery, new { id = id });
+                }
+            }
+
+            catch (Exception ex)
+            {
+                
+            }
+
+            return result;
+
+        }
     }
 }

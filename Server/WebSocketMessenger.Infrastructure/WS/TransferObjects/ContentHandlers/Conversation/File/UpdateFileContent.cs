@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Net.WebSockets;
+using System.Text;
 using System.Text.Json;
 using WebSocketMessenger.Core.Interfaces.WS;
 using WebSocketMessenger.Core.Models;
@@ -13,7 +14,7 @@ namespace WebSocketMessenger.Infrastructure.WS.TransferObjects.ContentHandlers.C
         public int MessageId { get; set; }
         public string FileExtention { get; set; }
         public string Content { get; set; }
-        public override async Task HandleAsync(HeaderInfo header, IWebSocketConnectionManager connectionManager, RepositoryCollection repositoryCollection)
+        public override async Task HandleAsync(HeaderInfo header, IWebSocketConnectionManager connectionManager,  RepositoryCollection repositoryCollection)
         {
             Message? currentMessage = await repositoryCollection.MessageRepository.GetMessageByIdAsync(MessageId);
             if (currentMessage != null) {
@@ -28,9 +29,10 @@ namespace WebSocketMessenger.Infrastructure.WS.TransferObjects.ContentHandlers.C
             }
             _ = connectionManager.NotifySocketsAsync(header.To.ToString(), Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new
             {
-                messageType = "update",
-                newContent = Content,
-                messageId = MessageId
+                MessageType = 2,
+                
+                NewContent = Content,
+                MessageId = MessageId
             })), header.Type);
         }
     }

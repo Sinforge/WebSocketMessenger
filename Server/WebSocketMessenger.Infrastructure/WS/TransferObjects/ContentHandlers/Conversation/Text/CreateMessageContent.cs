@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Net.WebSockets;
+using System.Text;
 using System.Text.Json;
 using WebSocketMessenger.Core.Interfaces.WS;
 using WebSocketMessenger.Core.Models;
@@ -21,9 +22,36 @@ namespace WebSocketMessenger.Infrastructure.WS.TransferObjects.ContentHandlers.C
                 Content = Content,
                 MessageContentType = header.Content,
                 MessageType = header.Type
-            };
-            _ = repositoryCollection.MessageRepository.CreateMessageAsync(message);
-            _ =  connectionManager.NotifySocketsAsync(header.To.ToString(), Encoding.UTF8.GetBytes(JsonSerializer.Serialize(message)), header.Type);
+            }; 
+            var id =await repositoryCollection.MessageRepository.CreateMessageAsync(message);
+
+            var username = await repositoryCollection.UserRepository.GetUsernameByIdAsync(header.From);
+            
+            _ =  connectionManager.NotifySocketsAsync(header.From.ToString(), 
+                Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new  
+                {
+                    Id = id,
+                    ReceiverId = header.To,
+                    SenderId = header.From,
+                    SendTime = header.SendTime,
+                    Content = Content,
+                    messageContentType = 2,
+                    MessageType = "CreatedMessage",
+                    Username = username
+                })), header.Type);
+            
+            _ =  connectionManager.NotifySocketsAsync(header.To.ToString(), 
+                Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new  
+                {
+                    Id = id,
+                    ReceiverId = header.To,
+                    SenderId = header.From,
+                    SendTime = header.SendTime,
+                    Content = Content,
+                    messageContentType = 2,
+                    MessageType = "CreateMessage",
+                    Username = username
+                })), header.Type);
         }
     }
 }

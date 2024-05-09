@@ -67,8 +67,15 @@ namespace WebSocketMessenger.Infrastructure.WS
             var data = new ArraySegment<byte>(message);
             if (_sockets.TryGetValue(userId, out var sockets))
             {
-                foreach(var socket in _sockets[userId]) {
-                    await SendMessageAsync(data, WebSocketMessageType.Text, socket);
+                foreach(var socket in sockets) {
+                    try
+                    {
+                        await SendMessageAsync(data, WebSocketMessageType.Text, socket);
+                    }
+                    catch
+                    {
+                        DeleteSocket(socket);
+                    }
                 }
 
             }

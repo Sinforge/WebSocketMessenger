@@ -6,10 +6,13 @@ namespace WebSocketMessenger.Infrastructure.WS.TransferObjects
     {
         public IMessageRepository MessageRepository { get; init; }
         public IGroupRepository GroupRepository { get; init; }
-        public RepositoryCollection(IGroupRepository groupRepository, IMessageRepository messageRepository)
+        
+        public IUserRepository UserRepository { get; init; }
+        public RepositoryCollection(IGroupRepository groupRepository, IMessageRepository messageRepository, IUserRepository userRepository)
         {
             GroupRepository = groupRepository;
             MessageRepository = messageRepository;
+            UserRepository = userRepository;
         }
     }
 }

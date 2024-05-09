@@ -41,7 +41,7 @@ namespace WebSocketMessenger.API.Controllers
             else return StatusCode(400);
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("authorize")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -59,6 +59,16 @@ namespace WebSocketMessenger.API.Controllers
             }
 
         }
+
+
+        [HttpGet]
+        [Route("{name}")]
+        public async Task<IActionResult> FindUsers([FromRoute] string name)
+        {
+            return Ok(await _userService.FindUserByNameAsync(name));
+
+        }
+       
         [NonAction]
         private JwtResponse CreateToken(User user)
         {
@@ -87,7 +97,7 @@ namespace WebSocketMessenger.API.Controllers
                 audience: _options.Value.Aud,
                 claims: claims,
                 notBefore: DateTime.Now,
-                expires: DateTime.Now.Add(TimeSpan.FromMinutes(2)),
+                expires: DateTime.Now.Add(TimeSpan.FromMinutes(10)),
                 signingCredentials: new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256)
             );
 

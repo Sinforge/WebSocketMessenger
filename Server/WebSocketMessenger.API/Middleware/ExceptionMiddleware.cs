@@ -16,7 +16,7 @@ namespace WebSocketMessenger.API.Middleware
             }
             catch (Exception e){
                 object result;
-                context.Response.ContentType = "application/json";
+                //context.Response.ContentType = "application/json";
                 if (e is SharedException myException)
                 {
                     context.Response.StatusCode = myException.StatusCode;
@@ -31,7 +31,7 @@ namespace WebSocketMessenger.API.Middleware
                 else
                 {
 
-                    context.Response.StatusCode = 500;
+                    //context.Response.StatusCode = 500;
                     result = new
                     {
                         StatusCode = 500,

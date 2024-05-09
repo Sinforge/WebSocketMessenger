@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System.Net.WebSockets;
+using Newtonsoft.Json;
 using System.Text;
 using WebSocketMessenger.Core.Interfaces.WS;
 using WebSocketMessenger.Infrastructure.TransferObjets.Base;

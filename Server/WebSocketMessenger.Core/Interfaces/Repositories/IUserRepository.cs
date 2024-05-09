@@ -1,4 +1,5 @@
-﻿using WebSocketMessenger.Core.Models;
+﻿using WebSocketMessenger.Core.Dtos;
+using WebSocketMessenger.Core.Models;
 namespace WebSocketMessenger.Core.Interfaces.Repositories
 {
     public interface IUserRepository
@@ -10,6 +11,8 @@ namespace WebSocketMessenger.Core.Interfaces.Repositories
         Task<bool> UpdateUserAsync(User user);
         Task<bool> DeleteUserAsync(Guid id);
         Task<User?> CheckUserCredentials(string login);
+        Task<IEnumerable<SearchUserDto>> FindUserByNameAsync(string name);
 
+        Task<string> GetUsernameByIdAsync(Guid id);
     }
 }

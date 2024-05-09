@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Net.WebSockets;
 using WebSocketMessenger.Core.Interfaces.WS;
@@ -20,7 +21,8 @@ namespace WebSocketMessenger.API.Middleware
 
         private async Task ReceiveMessage(WebSocket ws)
         {
-            var buffer = new byte[1024 * 5 * 1024];
+            // buffer with 120 KB
+            var buffer = new byte[1024 * 120];
             while (ws.State == WebSocketState.Open)
             {
                 var result = await ws.ReceiveAsync(buffer: new ArraySegment<byte>(buffer),
@@ -31,7 +33,7 @@ namespace WebSocketMessenger.API.Middleware
                 }
                 else
                 {
-                    await _handler.HandleMessage(result, buffer);
+                    await _handler.HandleMessage(result, ws ,buffer);
                 }
             }
         }
@@ -40,11 +42,13 @@ namespace WebSocketMessenger.API.Middleware
         {
             if (context.WebSockets.IsWebSocketRequest)
             {
-                var result = await context.AuthenticateAsync(JwtBearerDefaults.AuthenticationScheme);
-                if (result.Succeeded)
+                var handler = new JwtSecurityTokenHandler();
+                var token = context.Request.Query["token"];
+                var result = handler.ReadJwtToken(token.ToString());
+                if (result != null)
                 {
                     using var webSocket = await context.WebSockets.AcceptWebSocketAsync();
-                    _connectionManager.AddSocket(webSocket, result?.Principal?.Claims?.FirstOrDefault(c => c.Type == "Id")?.Value);
+                    _connectionManager.AddSocket(webSocket, result?.Claims?.FirstOrDefault(c => c.Type == "Id")?.Value);
                     await ReceiveMessage(webSocket);
                 }
                 else
