@@ -1,4 +1,5 @@
 ﻿using WebSocketMessenger.Core.Dtos;
+using WebSocketMessenger.Core.DTOs;
 
 namespace WebSocketMessenger.Core.Interfaces.Repositories
 {
@@ -14,5 +15,11 @@ namespace WebSocketMessenger.Core.Interfaces.Repositories
         public Task<bool> IsGroupMember(Guid userId, Guid groupId);
 
         public Task<IEnumerable<(Guid id, string name)>> GetUserGroupsAsync(Guid userId);
+
+        public Task<IEnumerable<Guid>> GetGroupMembersListAsync(Guid groupId);
+
+        public Task AddUsersToGroupAsync(IEnumerable<Guid> ids, Guid groupId);
+
+        public Task<IEnumerable<GroupMemberDto>> GetGroupMembersAsync(Guid groupId);
     }
 }

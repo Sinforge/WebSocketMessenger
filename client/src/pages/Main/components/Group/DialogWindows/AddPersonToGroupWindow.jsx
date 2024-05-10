@@ -13,22 +13,30 @@ import {
 } from '@mui/material';
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import CloseIcon from '@mui/icons-material/Close';
-
+import { getUsersToInvite, addUsersToGroup } from '../../../../../services/group.service';
+import { useEffect } from 'react';
+import useAxiosPrivate from "../../../../../hooks/useAxiosPrivate";
+import DialogStore from '../../../../../store/DialogStore';
 const AddPersonToGroupWindow = () => {
+    const axios = useAxiosPrivate();
+    const { openedDialog } = DialogStore;
     const [open, setOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
-    const [users] = useState([
-        { id: 1, name: 'John Doe' },
-        { id: 2, name: 'Jane Smith' },
-        { id: 3, name: 'Bob Johnson' },
-        { id: 4, name: 'Alice Williams' },
-        { id: 5, name: 'Tom Davis' },
-    ]);
+    const [users, setUsers] = useState([]);
+
+    useEffect(() => {
+        const getUsers = async () => {
+            var usersToInvite = (await getUsersToInvite(axios, openedDialog, searchQuery === '' ? null : searchQuery)).data
+            
+            console.log(usersToInvite)
+            setUsers(usersToInvite);
+            console.log(users);
+        }
+        getUsers();
+    }, [searchQuery])
     const [selectedUsers, setSelectedUsers] = useState([]);
 
-    const filteredUsers = users.filter(user =>
-        user.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    console.log(selectedUsers)
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -42,16 +50,16 @@ const AddPersonToGroupWindow = () => {
         setSearchQuery(e.target.value);
     };
 
-    const handleUserSelect = (user) => {
-        if (selectedUsers.includes(user)) {
-            setSelectedUsers(selectedUsers.filter(selectedUser => selectedUser !== user));
+    const handleUserSelect = (userId) => {
+        if (selectedUsers.includes(userId)) {
+            setSelectedUsers(selectedUsers.filter(selectedUser => selectedUser !== userId));
         } else {
-            setSelectedUsers([...selectedUsers, user]);
+            setSelectedUsers([...selectedUsers, userId]);
         }
     };
 
     const handleAddClick = () => {
-        // Simulate adding selected users
+        addUsersToGroup(axios, openedDialog, selectedUsers);
         console.log('Users added:', selectedUsers);
         handleClose();
     };
@@ -90,14 +98,14 @@ const AddPersonToGroupWindow = () => {
                         onChange={handleSearchChange}
                     />
                     <List>
-                        {filteredUsers.map(user => (
+                        {users.length > 0 && users.map(user => (
                             <ListItem
-                                key={user.id}
+                                key={user.Id}
                                 button
-                                selected={isSelected(user)}
-                                onClick={() => handleUserSelect(user)}
+                                selected={isSelected(user.id)}
+                                onClick={() => handleUserSelect(user.id)}
                             >
-                                <ListItemText primary={user.name} />
+                                <ListItemText primary={user.firstName + ' ' + user.secondName} secondary={user.username} />
                             </ListItem>
                         ))}
                     </List>

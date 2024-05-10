@@ -84,6 +84,43 @@ namespace WebSocketMessenger.Infrastructure.Data.Repositories
             return groups;
         }
 
+        public async Task<IEnumerable<Guid>> GetGroupMembersListAsync(Guid groupId)
+        {
+            string selectQuery =
+                "select user_id from user_group where group_id = @groupId";
+            using var connection = _context.CreateConnection();
+            var groupUserIds = await connection.QueryAsync<Guid>(selectQuery, new { groupId });
+
+            return groupUserIds;
+        }
+
+        public async Task AddUsersToGroupAsync(IEnumerable<Guid> ids, Guid groupId)
+        {
+            var newUserGroupEntities = ids.Select(x => new { group_id = groupId, user_id = x, role_id = 3 }).ToList();
+            var insertQuery = "insert into public.user_group (group_id, user_id, role_id) values (@group_id, @user_id, @role_id)";
+            using var connection = _context.CreateConnection();
+            connection.Open();
+            using var transaction = connection.BeginTransaction();
+            await connection.ExecuteAsync(insertQuery, newUserGroupEntities, transaction);
+            transaction.Commit();
+        }
+
+        public async Task<IEnumerable<GroupMemberDto>> GetGroupMembersAsync(Guid groupId)
+        {
+            var selectQuery =
+                "select ug.user_id as \"Id\", u.username as \"Username\", u.name as \"FirstName\", u.surname as \"SecondName\", gr.name as \"RoleName\", gr.id as \"RoleId\"  " +
+                "from public.user_group ug " +
+                "left join public.group_role gr on ug.role_id = gr.id " +
+                "join public.user u on u.id = ug.user_id " +
+                "where ug.group_id = @groupId";
+            using var connection = _context.CreateConnection();
+            var members = await connection.QueryAsync<GroupMemberDto>(selectQuery, new { groupId });
+
+            return members;
+
+        }
+
+
         public async Task<bool> KickUserFromGroupAsync(Guid groupId, Guid userId)
         {
             bool result = false;

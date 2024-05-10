@@ -155,5 +155,26 @@ namespace WebSocketMessenger.Infrastructure.Data.Repositories
             return result;
 
         }
+
+        public async Task<IEnumerable<User>> GetUsersByIdsAsync(IEnumerable<Guid> ids, bool contains = true)
+        {
+            string containsQuery = !contains ? "<> all" : "= any";
+            string selectQuery = $"select id as \"Id\", name as \"Name\", surname as \"Surname\", username as \"UserName\", email as \"Email\", password as \"Password\" from public.user " +
+                                 $"  where id {containsQuery}(@ids::uuid[])";
+            
+            using var connection = _context.CreateConnection();
+            var users = await connection.QueryAsync<User>(selectQuery, new { ids });
+            return users;
+        }
+        public async Task<IEnumerable<User>> GetUsersByIdsAndSearchStringAsync(IEnumerable<Guid> ids, string searchString, bool contains = true)
+        {
+            string containsQuery = !contains ? "<> all" : "= any";
+            string selectQuery = $"select id as \"Id\", name as \"Name\", surname as \"Surname\", username as \"UserName\", email as \"Email\", password as \"Password\" from public.user where id {containsQuery}(@ids::uuid[]) " +
+                                 $"and (username ilike @name or surname ilike @name  or concat(name, ' ', surname) ilike @name)";
+            
+            using var connection = _context.CreateConnection();
+            var users = await connection.QueryAsync<User>(selectQuery, new { ids, name = '%' + searchString + '%'});
+            return users;
+        }
     }
 }

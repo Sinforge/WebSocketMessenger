@@ -1,4 +1,5 @@
-﻿using WebSocketMessenger.Core.Dtos;
+﻿using System.Collections;
+using WebSocketMessenger.Core.Dtos;
 using WebSocketMessenger.Core.Models;
 namespace WebSocketMessenger.Core.Interfaces.Repositories
 {
@@ -14,5 +15,9 @@ namespace WebSocketMessenger.Core.Interfaces.Repositories
         Task<IEnumerable<SearchUserDto>> FindUserByNameAsync(string name);
 
         Task<string> GetUsernameByIdAsync(Guid id);
+
+        Task<IEnumerable<User>> GetUsersByIdsAsync(IEnumerable<Guid> ids, bool contains = true);
+        Task<IEnumerable<User>> GetUsersByIdsAndSearchStringAsync(IEnumerable<Guid> ids, string searchString, bool contains = true);
+
     }
 }

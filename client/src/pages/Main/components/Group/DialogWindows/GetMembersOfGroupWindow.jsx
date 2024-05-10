@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { getGroupMembers } from '../../../../../services/group.service';
 import {
     Dialog,
     DialogTitle,
@@ -9,22 +10,29 @@ import {
     ListItemText,
     IconButton,
     Button,
+    Typography,
 } from '@mui/material';
 import GroupsIcon from '@mui/icons-material/Groups';
-
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
-
+import useAxiosPrivate from '../../../../../hooks/useAxiosPrivate';
+import { useEffect } from 'react';
+import DialogStore from '../../../../../store/DialogStore';
 const GetMembersOfGroupWindow = () => {
     const [open, setOpen] = useState(false);
-    const [users, setUsers] = useState([
-        { id: 1, name: 'John Doe', role: 'Admin' },
-        { id: 2, name: 'Jane Smith', role: 'Moderator' },
-        { id: 3, name: 'Bob Johnson', role: 'User' },
-        { id: 4, name: 'Alice Williams', role: 'Admin' },
-        { id: 5, name: 'Tom Davis', role: 'Moderator' },
-    ]);
+    const [users, setUsers] = useState([]);
+    const { openedDialog } = DialogStore;
+    const axios = useAxiosPrivate();
 
+
+    useEffect(() => {
+        const getUsers = async () => {
+            var members = (await getGroupMembers(axios, openedDialog)).data
+            
+            setUsers(members);
+        }
+        getUsers();
+    }, [])
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -66,10 +74,21 @@ const GetMembersOfGroupWindow = () => {
                     <List>
                         {users.map((user) => (
                             <ListItem key={user.id}>
-                                <ListItemText primary={user.name} secondary={user.role} />
+                                <ListItemText primary={user.firstName + ' ' + user.secondName} 
+                                secondary={
+                                    <React.Fragment>
+                                        <Typography component="span" variant="body2" color="textPrimary">
+                                            {"Username: " + user.username}
+                                        </Typography>
+                                        <br />
+                                        <Typography component="span" variant="body2" color="textSecondary">
+                                            {"Role: " + user.roleName}
+                                        </Typography>
+                                    </React.Fragment>
+                                } />
                                 <IconButton
                                     aria-label="remove"
-                                    onClick={() => handleRemoveUser(user)}
+                                    onClick={() => handleRemoveUser(user.id)}
                                 >
                                     <DeleteIcon />
                                 </IconButton>
