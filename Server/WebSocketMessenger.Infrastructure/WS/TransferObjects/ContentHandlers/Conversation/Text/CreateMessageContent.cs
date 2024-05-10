@@ -35,7 +35,7 @@ namespace WebSocketMessenger.Infrastructure.WS.TransferObjects.ContentHandlers.C
                     SenderId = header.From,
                     SendTime = header.SendTime,
                     Content = Content,
-                    messageContentType = 2,
+                    messageContentType = 1,
                     MessageType = "CreatedMessage",
                     Username = username
                 })), header.Type);
@@ -48,7 +48,7 @@ namespace WebSocketMessenger.Infrastructure.WS.TransferObjects.ContentHandlers.C
                     SenderId = header.From,
                     SendTime = header.SendTime,
                     Content = Content,
-                    messageContentType = 2,
+                    messageContentType = 1,
                     MessageType = "CreateMessage",
                     Username = username
                 })), header.Type);

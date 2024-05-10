@@ -1,11 +1,13 @@
 import { makeAutoObservable} from "mobx"
-import { getUserConversation, getUserDialogs } from "../services/message.service";
+import { getUserConversation, getUserDialogs, getUserGroups, getUserGroupMessages } from "../services/message.service";
 class DialogStore {
     webSocket = null;
     messages = [];
     dialogs = [];
     openedDialog = null;
     openedUser = null;
+    openedGroup = null;
+    messageType = 0;
     constructor() {
         // makeObservable(this, {
         //     messages: observable,
@@ -16,6 +18,10 @@ class DialogStore {
 
     createConnection = (webSocket) => {
         this.webSocket = webSocket;
+    }
+
+    setMessageType = (type) => {
+        this.messageType = type;
     }
 
     updateMessageContent = (message) => {
@@ -83,8 +89,26 @@ class DialogStore {
         this.openedUser = openedUser;
         this.messages = []
     }
+
+    setGroupMessages = async (axios, groupId) => {
+        this.openedDialog = groupId;
+        let data = (await getUserGroupMessages(axios, groupId)).data
+        this.openedGroup = this.dialogs.find(x => x.id == groupId);
+        this.messages = data 
+    }
+
+    addGroup = (group) => {
+        this.dialogs.push(group)
+    }
+
+
     getDialogs = async (axios) => {
         let data = (await getUserDialogs(axios)).data
+        this.dialogs = data
+    }
+
+    getGroups = async(axios) => {
+        let data = (await getUserGroups(axios)).data
         this.dialogs = data
     }
     setMessages = async (axios, userId) => {

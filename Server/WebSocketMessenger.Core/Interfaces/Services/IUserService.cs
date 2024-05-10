@@ -18,5 +18,7 @@ namespace WebSocketMessenger.Core.Interfaces.Services
         public Task<User?> CheckUserCredentials(string login, string password);
 
         public Task<IEnumerable<SearchUserDto>> FindUserByNameAsync(string name);
+
+        public Task<IEnumerable<GroupItemDto>> GetUserGroupsAsync(Guid userId);
     }
 }

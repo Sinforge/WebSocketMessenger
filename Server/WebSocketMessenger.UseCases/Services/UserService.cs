@@ -9,9 +9,13 @@ namespace WebSocketMessenger.UseCases.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
-        public UserService(IUserRepository userRepository)
+        private readonly IGroupRepository _groupRepository;
+        private readonly IMessageRepository _messageRepository;
+        public UserService(IUserRepository userRepository, IGroupRepository groupRepository, IMessageRepository messageRepository)
         {
             _userRepository = userRepository;
+            _groupRepository = groupRepository;
+            _messageRepository = messageRepository;
 
         }
 
@@ -74,6 +78,35 @@ namespace WebSocketMessenger.UseCases.Services
         public async Task<IEnumerable<SearchUserDto>> FindUserByNameAsync(string name)
         {
             return await _userRepository.FindUserByNameAsync(name);
+        }
+
+        public async Task<IEnumerable<GroupItemDto>> GetUserGroupsAsync(Guid userId)
+        {
+            var groupsNames = await _groupRepository.GetUserGroupsAsync(userId);
+
+            var result = new List<GroupItemDto>();
+            if (groupsNames.Any())
+            {
+                var lastMessages = await _messageRepository.GetGroupsLastMessagesAsync(groupsNames.Select(x => x.id));
+                if (lastMessages is not null)
+                {
+                    foreach (var groupName in groupsNames.ToArray())
+                    {
+                        (Guid id, string message, DateTime sendTime)? lastMessage =
+                            lastMessages.FirstOrDefault(x => x.id == groupName.id);
+                        result.Add(new GroupItemDto()
+                        {
+                            Id = groupName.id,
+                            Name = groupName.name,
+                            LastMessage = lastMessage?.message,
+                            SendTime = lastMessage?.sendTime
+                        });
+
+                    }
+                }
+            }
+
+            return result;
         }
     }
 }

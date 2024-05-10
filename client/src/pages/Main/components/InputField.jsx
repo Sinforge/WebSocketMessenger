@@ -7,7 +7,7 @@ import { observer } from "mobx-react-lite"
 import DialogStore from '../../../store/DialogStore';
 const InputField = observer(({ socket, handleMessageChange }) => {
 
-  const { openedDialog } = DialogStore;
+  const { openedDialog, openedGroup, messageType } = DialogStore;
   const [user, setUser] = useContext(AuthContext);
   const myId = jwtDecode(user.access_token)["Id"];
 
@@ -19,7 +19,7 @@ const InputField = observer(({ socket, handleMessageChange }) => {
         "HeaderInfo": {
           "From" : myId,
           "To" : openedDialog,
-          "Type": 1,
+          "Type": messageType + 1,
           "Content": 1,
           "SendTime": new Date().toISOString(),
           "Method" : "CreateMessage"
@@ -42,9 +42,9 @@ const InputField = observer(({ socket, handleMessageChange }) => {
   //   }
   // };
 
-  return (
-    <Box component='form' onSubmit={sendMessage} sx={{ display: 'flex', alignItems: 'center' }}>
-      <TextField
+  return (<Box component='form' onSubmit={sendMessage} sx={{ display: 'flex', alignItems: 'center' }}>
+      { openedDialog !== null &&
+      (<div><TextField
         label="Введите сообщение"
         variant="outlined"
         id="message"
@@ -55,8 +55,9 @@ const InputField = observer(({ socket, handleMessageChange }) => {
       <Button variant="contained" type='submit' color="primary">
         Отправить
       </Button>
-    </Box>
-  );
-});
+      </div>)}
+    </Box>)
+  }
+);
 
 export default InputField;

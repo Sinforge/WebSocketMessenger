@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import DialogItem from "./DialogItem";
 import Box from "@mui/material/Box"
-import DialogStore from "../../../store/DialogStore";
+import DialogStore from "../../../../store/DialogStore";
 import { useEffect } from "react";
-import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import { observer } from "mobx-react-lite"
 
 const DialogItemList = observer(() => {

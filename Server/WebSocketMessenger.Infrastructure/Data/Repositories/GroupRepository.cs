@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Microsoft.Extensions.Logging;
+using WebSocketMessenger.Core.Dtos;
 using WebSocketMessenger.Core.Interfaces.Repositories;
 
 namespace WebSocketMessenger.Infrastructure.Data.Repositories
@@ -28,28 +29,21 @@ namespace WebSocketMessenger.Infrastructure.Data.Repositories
             return result;
         }
 
-        public async Task<bool> CreateGroupAsync(string name, Guid creatorId)
+        public async Task<Guid> CreateGroupAsync(string name, Guid creatorId)
         {
-            bool result = false;
             Guid groupId = Guid.NewGuid();
             string insertNewGroupQuery = "insert into public.group (id, name) values (@groupId, @name);";
             string insertUserGroupRelationQuery = "insert into public.user_group (group_id, user_id, role_id) values (@group_id, @user_id, @role_id);";
 
-            using (var connection = _context.CreateConnection())
-            {
-                connection.Open();
-                using (var transaction = connection.BeginTransaction())
-                {
-                    await connection.ExecuteAsync(insertNewGroupQuery, new { groupId = groupId, name = name });
-                    await connection.ExecuteAsync(insertUserGroupRelationQuery, new { group_id = groupId, user_id = creatorId, role_id = 1 });
-                    result = true;
-                    transaction.Commit();
-                }
+            using var connection = _context.CreateConnection();
+            connection.Open();
+            using var transaction = connection.BeginTransaction();
+            await connection.ExecuteAsync(insertNewGroupQuery, new { groupId,  name });
+            await connection.ExecuteAsync(insertUserGroupRelationQuery, new { group_id = groupId, user_id = creatorId, role_id = 1 });
+            transaction.Commit();
+            
 
-            }
-
-
-            return result;
+            return groupId;
 
         }
 
@@ -77,6 +71,17 @@ namespace WebSocketMessenger.Infrastructure.Data.Repositories
             }
             return id != Guid.Empty;
 
+        }
+
+        public async Task<IEnumerable<(Guid id, string name)>> GetUserGroupsAsync(Guid userId)
+        {
+            string selectQuery =
+                "select group_id as id, name as name from public.user_group join public.group gr on group_id = gr.id where user_id = @userId;";
+            IEnumerable<(Guid id, string name)> groups = new List<(Guid id, string name)>();
+            using var connection = _context.CreateConnection();
+            groups = await connection.QueryAsync<(Guid id, string name)>(selectQuery, new { userId });
+
+            return groups;
         }
 
         public async Task<bool> KickUserFromGroupAsync(Guid groupId, Guid userId)

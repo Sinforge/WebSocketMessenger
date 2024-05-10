@@ -9,6 +9,7 @@ namespace WebSocketMessenger.API.Extentions
         {
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IMessageService, MessageService>();
+            services.AddScoped<IGroupService, GroupService>();
         }
     }
 }

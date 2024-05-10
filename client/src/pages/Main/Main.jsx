@@ -1,28 +1,30 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Box from "@mui/material/Box"
-import DialogItemList from "./components/DialogItemList";
+import DialogItemList from "./components/Dialog/DialogItemList";
 import Divider from "@mui/material/Divider"
 import Grid from "@mui/material/Grid"
 import MessageList from "./components/MessageList";
 import InputField from "./components/InputField";
 import { AuthContext } from "../../providers/AuthProvider";
 import { w3cwebsocket } from 'websocket';
-import DialogHeader from "./components/DialogHeader";
+import DialogHeader from "./components/Dialog/DialogHeader";
 import DialogStore from "../../store/DialogStore";
 import { toast } from "react-toastify";
 import { observer } from "mobx-react-lite";
 import FileUploader from './components/FileUploader'
+import MessageTypeSwitch from "./components/MessageTypeSwitch";
+import GroupItemList from "./components/Group/GroupItemList";
+import GroupHeader from "./components/Group/GroupHeader";
 
 
-const Main = () => {
+const Main = observer(() => {
     const [user, setUser] = useContext(AuthContext);
     //const socket = useRef();
 
     const socket = useRef(null);
+    const {setIncomeMessage, deleteMessageContent, setSendedMessage, updateMessageContent, messageType} = DialogStore;
 
-    const {setIncomeMessage, deleteMessageContent, setSendedMessage, updateMessageContent} = DialogStore;
-
-
+    console.log(messageType);
     useEffect(() => {
         console.log("open socket")
         socket.current = new w3cwebsocket(
@@ -87,13 +89,18 @@ const Main = () => {
         <Box component='div' sx={{marginTop: "100px"}}>
             <Grid container xs={12}>
                 <Grid xs={4}>
-                    <DialogItemList />
+                    <MessageTypeSwitch/>
+                    { messageType == 0 
+                        ? <DialogItemList /> 
+                        : <GroupItemList/>}
                 </Grid>
                 <Grid>
                     <Divider orientation="vertical"/>
                 </Grid>
                 <Grid xs={7}>
-                    <DialogHeader/>
+                    { messageType == 0 
+                        ? <DialogHeader/>
+                        : <GroupHeader/>}
                     <MessageList socket={socket}/>
                     <InputField socket={socket} />
                     <FileUploader socket={socket}/>
@@ -105,6 +112,6 @@ const Main = () => {
 
         </Box>
     );
-}
+})
 
 export default Main;

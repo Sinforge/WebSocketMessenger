@@ -27,6 +27,7 @@ namespace WebSocketMessenger.Infrastructure.Data.Repositories
 
             return result;
         }
+        
 
         public async Task<bool> DeleteMessageAsync(int messageId)
         {
@@ -129,6 +130,22 @@ namespace WebSocketMessenger.Infrastructure.Data.Repositories
             }
 
             return result;        }
+
+        public async Task<IEnumerable<(Guid id, string message, DateTime sendTime)>> GetGroupsLastMessagesAsync(IEnumerable<Guid> groupIds)
+        {
+            groupIds.ToList().ForEach(x => Console.WriteLine(x));
+            var selectQuery = "select \"ReceiverId\" as id, \"Content\" as message, \"SendTime\" as \"sendTime\" " +
+                              " from (select m.*, ROW_NUMBER() OVER (PARTITION BY \"ReceiverId\" ORDER BY \"SendTime\" DESC) " +
+                              " AS rn FROM message m where \"ReceiverId\" = ANY(@ids) and \"MessageType\" = 2) as result where rn = 1";
+
+            var ids = groupIds.ToArray();
+            using var connection = _context.CreateConnection();
+            var result = 
+                await connection.QueryAsync<(Guid id, string message, DateTime sendTime )>(selectQuery, new { ids}) ?? 
+                new List<(Guid id, string message, DateTime sendTime)>();
+
+            return result ?? new List<(Guid id, string message, DateTime sendTime)>();  
+        }
 
         public async Task<bool> UpdateMessageAsync(int messageId, string content, int contentType)
         {

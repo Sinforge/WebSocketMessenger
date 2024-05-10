@@ -4,7 +4,8 @@ import { AuthContext } from '../../../providers/AuthProvider';
 import { useContext } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import DialogStore from '../../../store/DialogStore';
-const FileUploader = ({socket}) => {
+import { observer } from 'mobx-react-lite';
+const FileUploader = observer(({socket}) => {
   const [file, setFile] = useState(null);
   const [fileBytes, setFileBytes] = useState([]);
   const { openedDialog } = DialogStore;
@@ -68,8 +69,8 @@ const FileUploader = ({socket}) => {
     // }, 1000);
   };
 
-  return (
-    <Container>
+  return(
+   <Container> { openedDialog !== null &&
       <Grid container spacing={2} alignItems="center">
         <Grid item xs={12}>
           <Typography variant="h6" gutterBottom>
@@ -102,8 +103,8 @@ const FileUploader = ({socket}) => {
           </Button>
         </Grid>
       </Grid>
-    </Container>
-  );
-};
+    }
+    </Container>)
+});
 
 export default FileUploader;

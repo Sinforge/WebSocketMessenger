@@ -16,8 +16,10 @@ namespace WebSocketMessenger.API.Controllers
     public class MessageController : ControllerBase
     {
         private readonly IMessageService _messageService;
-        public MessageController(IMessageService messageService)
+        private readonly IUserService _userService;
+        public MessageController(IMessageService messageService, IUserService userService)
         {
+            _userService = userService;
             _messageService = messageService;
 
         }
@@ -33,13 +35,21 @@ namespace WebSocketMessenger.API.Controllers
         [HttpGet("conversation")]
         public async Task<IEnumerable<DialogItemDto>> GetUserDialogs()
         {
-            Guid cliendId = GetUserIdFromClaims();
-            return await _messageService.GetUserDialogs(cliendId);
+            Guid clientId = GetUserIdFromClaims();
+            return await _messageService.GetUserDialogs(clientId);
         }
+
+        [HttpGet("group")]
+        public async Task<IEnumerable<GroupItemDto>> GetUserGroups()
+        {
+            Guid clientId = GetUserIdFromClaims();
+            return await _userService.GetUserGroupsAsync(clientId);
+        }
+        
         [HttpGet("group/{groupId}")]
         [ProducesResponseType(typeof(IEnumerable<Guid>), 200)]
         [ProducesResponseType(401)]
-        public async Task<IEnumerable<int>> GetGroupMessages([FromRoute] Guid groupId)
+        public async Task<IEnumerable<MessageDto>> GetGroupMessages([FromRoute] Guid groupId)
         {
             Guid clientId = GetUserIdFromClaims();
             return await _messageService.GetMessageByGroupAsync(clientId, groupId);

@@ -3,7 +3,6 @@ using WebSocketMessenger.Core.Exceptions;
 using WebSocketMessenger.Core.Interfaces.Repositories;
 using WebSocketMessenger.Core.Interfaces.Services;
 using WebSocketMessenger.Core.Models;
-using WebSocketMessenger.Infrastructure.FileSystem;
 
 namespace WebSocketMessenger.UseCases.Services
 {
@@ -16,13 +15,22 @@ namespace WebSocketMessenger.UseCases.Services
             _groupRepository = groupRepository;
         }
 
-        public async Task<IEnumerable<int>> GetMessageByGroupAsync(Guid userId, Guid groupId)
+        public async Task<IEnumerable<MessageDto>> GetMessageByGroupAsync(Guid userId, Guid groupId)
         {
             if(!await _groupRepository.IsGroupMember(userId, groupId))
             {
                 throw new SharedException("User not member of the group", 403);
             }
-            return from message in await _messageRepository.GetGroupMessagesAsync(groupId) select message.Id;
+            return from message in await _messageRepository.GetGroupMessagesAsync(groupId) select 
+                    new MessageDto()
+                    {
+                        Id = message.Id,
+                        AuthorId = message.SenderId,
+                        Content = message.Content,
+                        MessageContentType = message.MessageContentType,
+                        SendTime = message.SendTime,
+                        Username = "some user"
+                    };
         }
 
         public async Task<MessageDTO> GetMessageByIdAsync(int messageId, Guid userId)
