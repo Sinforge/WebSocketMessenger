@@ -12,4 +12,8 @@ public interface IGroupService
     Task AddUsersToGroupAsync(IEnumerable<Guid> ids, Guid groupId);
     
     Task<IEnumerable<GroupMemberDto>> GetGroupMembersAsync(Guid groupId);
+
+    Task KickUserFromGroupAsync(Guid groupId, Guid userId);
+
+    Task UpdateUserGroupRoleAsync(Guid groupId, Guid userId, int roleId);
 }

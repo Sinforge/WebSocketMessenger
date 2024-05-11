@@ -17,3 +17,11 @@ export function getGroupMembers(axios, groupId) {
     var endpoint = "/group/members"
     return axios.post(endpoint, {"Id": groupId});
 }
+
+export function deleteUserFromGroup(axios, groupId, userId) {
+    return axios.delete("/group/" + groupId +"/members/" + userId);
+}
+
+export function updateUserGroupRole(axios, groupId, userId, roleId) {
+    return axios.put("/group/members", {"GroupId": groupId, "UserId": userId, "RoleId": roleId})
+}

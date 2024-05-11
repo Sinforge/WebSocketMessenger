@@ -5,7 +5,7 @@ import Typography from "@mui/material/Typography"
 import Grid from "@mui/material/Grid"
 import DialogStore from "../../../../store/DialogStore";
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
-const DialogItem = ({userId, userName, lastMessage}) => {
+const DialogItem = ({userId, userName, lastMessage, sendTime}) => {
     const axios = useAxiosPrivate();
     const { setMessages } = DialogStore;
     const handleClick = () => {
@@ -30,6 +30,9 @@ const DialogItem = ({userId, userName, lastMessage}) => {
                 </Grid>
                 <Grid xs={6}>
                     <Typography>{lastMessage}</Typography>
+                </Grid>
+                <Grid xs={6}>
+                    <Typography>{sendTime}</Typography>
                 </Grid>
             </Grid>
            

@@ -21,7 +21,7 @@ const DialogItemList = observer(() => {
     }
     return (
         
-        <Box sx={{height: '400px', overflowY: 'auto'}}>
+        <Box sx={{height: '700px', overflowY: 'auto'}}>
             {dialogs.length == 0 && <Box>You, not have dialogs</Box>}
             {dialogs.map((x, i) =>
                 <DialogItem userId={x.id} userName={x.username} lastMessage={x.lastMessage} key={i}/>

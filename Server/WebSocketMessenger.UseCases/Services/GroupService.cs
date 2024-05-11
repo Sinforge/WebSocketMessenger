@@ -57,4 +57,14 @@ public class GroupService : IGroupService
     {
         return await _groupRepository.GetGroupMembersAsync(groupId);
     }
+
+    public async Task KickUserFromGroupAsync(Guid groupId, Guid userId)
+    { 
+        await _groupRepository.KickUserFromGroupAsync(groupId, userId);
+    }
+
+    public async Task UpdateUserGroupRoleAsync(Guid groupId, Guid userId, int roleId)
+    {
+        await _groupRepository.UpdateUserGroupRoleAsync(groupId, userId, roleId);
+    }
 }

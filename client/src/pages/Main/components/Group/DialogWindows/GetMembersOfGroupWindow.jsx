@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { getGroupMembers } from '../../../../../services/group.service';
+
 import {
     Dialog,
     DialogTitle,
@@ -11,6 +12,8 @@ import {
     IconButton,
     Button,
     Typography,
+    Select,
+    MenuItem,
 } from '@mui/material';
 import GroupsIcon from '@mui/icons-material/Groups';
 import CloseIcon from '@mui/icons-material/Close';
@@ -18,17 +21,24 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import useAxiosPrivate from '../../../../../hooks/useAxiosPrivate';
 import { useEffect } from 'react';
 import DialogStore from '../../../../../store/DialogStore';
+import { AuthContext } from '../../../../../providers/AuthProvider';
+import { jwtDecode } from 'jwt-decode';
+import { updateUserGroupRole, deleteUserFromGroup } from '../../../../../services/group.service';
 const GetMembersOfGroupWindow = () => {
     const [open, setOpen] = useState(false);
     const [users, setUsers] = useState([]);
     const { openedDialog } = DialogStore;
+    
+    const [user, setUser] = useContext(AuthContext);
+    const myId = jwtDecode(user.access_token)["Id"];
+    const [currentUserRole, setCurrentUserRole] = useState('')
     const axios = useAxiosPrivate();
 
 
     useEffect(() => {
         const getUsers = async () => {
             var members = (await getGroupMembers(axios, openedDialog)).data
-            
+            setCurrentUserRole(members.find(x => x.id === myId).roleId);
             setUsers(members);
         }
         getUsers();
@@ -41,10 +51,24 @@ const GetMembersOfGroupWindow = () => {
         setOpen(false);
     };
 
-    const handleRemoveUser = (user) => {
+    const handleRemoveUser = (userId) => {
         // Simulate removing the user
-        console.log(`Removing user ${user.name}`);
+        deleteUserFromGroup(axios, openedDialog, userId);
+        setUsers(prevUsers => prevUsers.filter(user => user.id !== userId));
+        console.log(`Removing user ${userId}`);
     };
+
+    const handleRoleChange = (userId, newRoleId) => {
+        updateUserGroupRole(axios, openedDialog, userId, newRoleId);
+        setUsers(prevUsers => prevUsers.map(user => {
+            if (user.id === userId) {
+                return { ...user, roleId: newRoleId };
+            }
+            return user;
+        }));
+        console.log(`Changing role for user ${userId} to ${newRoleId}`);
+    };
+
     const iconStyle = {
         fontSize: '24px',
         marginLeft: '10px',
@@ -82,7 +106,19 @@ const GetMembersOfGroupWindow = () => {
                                         </Typography>
                                         <br />
                                         <Typography component="span" variant="body2" color="textSecondary">
-                                            {"Role: " + user.roleName}
+                                        {"Role: "}
+                                        { currentUserRole <= 2 && user.roleId !== 1 ? (
+                                            <Select
+                                                value={user.roleId}
+                                                onChange={(event) => handleRoleChange(user.id, event.target.value)}
+                                            >
+                                                <MenuItem value={2}>Moderator</MenuItem>
+                                                <MenuItem value={3}>User</MenuItem>
+                                                {/* Add more roles as needed */}
+                                            </Select>
+                                        ) : (
+                                            user.roleName // Если пользователь создатель, просто отображаем текущую роль
+                                        )}
                                         </Typography>
                                     </React.Fragment>
                                 } />
@@ -90,7 +126,9 @@ const GetMembersOfGroupWindow = () => {
                                     aria-label="remove"
                                     onClick={() => handleRemoveUser(user.id)}
                                 >
+                                    { currentUserRole <= 2 && user.id !== myId &&
                                     <DeleteIcon />
+                                    }
                                 </IconButton>
                             </ListItem>
                         ))}

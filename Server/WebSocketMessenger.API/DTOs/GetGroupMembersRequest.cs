@@ -1,4 +1,4 @@
-namespace WebSocketMessenger.Core.DTOs;
+namespace WebSocketMessenger.API.DTOs;
 
 public class GetGroupMembersRequest
 {

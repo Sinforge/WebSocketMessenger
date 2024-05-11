@@ -2,6 +2,7 @@ using System.Collections;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WebSocketMessenger.API.DTOs;
 using WebSocketMessenger.Core.Dtos;
 using WebSocketMessenger.Core.DTOs;
 using WebSocketMessenger.Core.Interfaces.Services;
@@ -47,6 +48,21 @@ public class GroupController : ControllerBase
     public async Task<IEnumerable<GroupMemberDto>> GetGroupMembersAsync([FromBody] GetGroupMembersRequest request)
     {
         return await _groupService.GetGroupMembersAsync(request.Id);
+    }
+
+
+    [Authorize]
+    [HttpDelete("{groupId}/members/{userId}")]
+    public async Task KickUserFromGroupAsync([FromRoute] Guid groupId, [FromRoute] Guid userId)
+    {
+        await _groupService.KickUserFromGroupAsync(groupId, userId);
+    }
+
+    [Authorize]
+    [HttpPut("members")]
+    public async Task UpdateUserGroupRole([FromBody] UpdateUserGroupRoleRequest request)
+    {
+        await _groupService.UpdateUserGroupRoleAsync(request.GroupId, request.UserId, request.RoleId);
     }
       
 
