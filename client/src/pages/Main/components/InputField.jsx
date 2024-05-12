@@ -5,8 +5,8 @@ import { useContext } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import { observer } from "mobx-react-lite"
 import DialogStore from '../../../store/DialogStore';
-const InputField = observer(({ socket, handleMessageChange }) => {
 
+const InputField = observer(({ socket, handleMessageChange }) => {
   const { openedDialog, openedGroup, messageType } = DialogStore;
   const [user, setUser] = useContext(AuthContext);
   const myId = jwtDecode(user.access_token)["Id"];
@@ -36,28 +36,33 @@ const InputField = observer(({ socket, handleMessageChange }) => {
     }
   }
 
-  // const handleKeyPress = (e) => {
-  //   if (e.key === 'Enter') {
-  //     sendMessage();
-  //   }
-  // };
-
-  return (<Box component='form' onSubmit={sendMessage} sx={{ display: 'flex', alignItems: 'center' }}>
-      { openedDialog !== null &&
-      (<div><TextField
-        label="Введите сообщение"
-        variant="outlined"
-        id="message"
-        name="message"
-        autoFocus
-        sx={{ flex: 1 }}
-      />
-      <Button variant="contained" type='submit' color="primary">
-        Отправить
-      </Button>
-      </div>)}
-    </Box>)
-  }
-);
+  return (
+    <Box
+      component='form'
+      onSubmit={sendMessage}
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        marginTop: '16px', // Add margin at the top
+      }}
+    >
+      {openedDialog !== null && (
+        <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+          <TextField
+            label="Введите сообщение"
+            variant="outlined"
+            id="message"
+            name="message"
+            autoFocus
+            sx={{ flex: 1, marginRight: '8px', width: '100%' }} // Add width: 100%
+          />
+          <Button variant="contained" type='submit' color="primary">
+            Отправить
+          </Button>
+        </Box>
+      )}
+    </Box>
+  );
+});
 
 export default InputField;

@@ -17,7 +17,7 @@ import {
 } from '@mui/material';
 import GroupsIcon from '@mui/icons-material/Groups';
 import CloseIcon from '@mui/icons-material/Close';
-import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteIcon from '@mui/icons-material/PersonRemove';
 import useAxiosPrivate from '../../../../../hooks/useAxiosPrivate';
 import { useEffect } from 'react';
 import DialogStore from '../../../../../store/DialogStore';
@@ -27,7 +27,7 @@ import { updateUserGroupRole, deleteUserFromGroup } from '../../../../../service
 const GetMembersOfGroupWindow = () => {
     const [open, setOpen] = useState(false);
     const [users, setUsers] = useState([]);
-    const { openedDialog } = DialogStore;
+    const { openedDialog, setGroupRole } = DialogStore;
     
     const [user, setUser] = useContext(AuthContext);
     const myId = jwtDecode(user.access_token)["Id"];
@@ -38,7 +38,9 @@ const GetMembersOfGroupWindow = () => {
     useEffect(() => {
         const getUsers = async () => {
             var members = (await getGroupMembers(axios, openedDialog)).data
-            setCurrentUserRole(members.find(x => x.id === myId).roleId);
+            var roleId = members.find(x => x.id === myId).roleId;
+            setCurrentUserRole(roleId);
+            setGroupRole(roleId);
             setUsers(members);
         }
         getUsers();

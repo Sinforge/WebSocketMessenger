@@ -67,4 +67,9 @@ public class GroupService : IGroupService
     {
         await _groupRepository.UpdateUserGroupRoleAsync(groupId, userId, roleId);
     }
+
+    public async Task UpdateGroupAsync(Guid groupId, string name)
+    {
+        await _groupRepository.UpdateGroupNameAsync(groupId, name);
+    }
 }

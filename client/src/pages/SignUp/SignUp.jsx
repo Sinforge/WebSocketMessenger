@@ -9,6 +9,7 @@ import Link from "@mui/material/Link"
 import FormControlLabel  from "@mui/material/FormControlLabel"
 import { registerUser } from "../../services/user.service"
 import { useNavigate } from "react-router-dom"
+import { toast } from "react-toastify";
 const SignUp = () => {
 
     const navigate = useNavigate();
@@ -17,14 +18,27 @@ const SignUp = () => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         
-        await registerUser({
-            Name: data.get('firstName'),
-            Surname: data.get('lastName'),
-            Email: data.get('email'),
-            Password: data.get('password'),
-            UserName: data.get('username')
-        });
-        navigate("/signin");
+        try {
+            await registerUser({
+                Name: data.get('firstName'),
+                Surname: data.get('lastName'),
+                Email: data.get('email'),
+                Password: data.get('password'),
+                UserName: data.get('username')
+            });
+            navigate("/signin");
+
+        
+            // Обработка успешного ответа
+            // response содержит данные успешного ответа
+        } catch (error) {
+            if (error.response && error.response.status === 400) {
+                toast.error("User with such email or username already exists")
+            } else {
+                // Обработка других ошибок
+                console.error('Произошла ошибка:', error);
+            }
+        }
     }
     return(
         //<div>test</div>

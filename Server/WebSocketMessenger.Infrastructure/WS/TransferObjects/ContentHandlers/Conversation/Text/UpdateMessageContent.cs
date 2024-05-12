@@ -31,7 +31,7 @@ namespace WebSocketMessenger.Infrastructure.WS.TransferObjects.ContentHandlers.C
                 MessageType="UpdateMessage",
                 newContent=NewContent,
                 id = MessageId,
-                senderId = currentMessage.SenderId
+                convId = header.Type == 1 ? currentMessage.SenderId : currentMessage.ReceiverId
             })), header.Type);
             
         }

@@ -18,5 +18,6 @@ namespace WebSocketMessenger.Core.Interfaces.Repositories
         Task<Guid> GetMessageReceiver(int messageId);
 
         Task<IEnumerable<(Guid id, string message, DateTime sendTime)>> GetGroupsLastMessagesAsync(IEnumerable<Guid> groupIds);
+
     }
 }

@@ -97,7 +97,7 @@ namespace WebSocketMessenger.API.Controllers
                 audience: _options.Value.Aud,
                 claims: claims,
                 notBefore: DateTime.Now,
-                expires: DateTime.Now.Add(TimeSpan.FromMinutes(10)),
+                expires: DateTime.Now.Add(TimeSpan.FromMinutes(9999)),
                 signingCredentials: new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256)
             );
 

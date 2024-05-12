@@ -64,7 +64,13 @@ public class GroupController : ControllerBase
     {
         await _groupService.UpdateUserGroupRoleAsync(request.GroupId, request.UserId, request.RoleId);
     }
-      
+
+    [Authorize]
+    [HttpPut]
+    public async Task UpdateGroup([FromBody] UpdateGroupRequest request)
+    {
+        await _groupService.UpdateGroupAsync(request.GroupId, request.Name);
+    }
 
     [NonAction]
     private Guid GetUserIdFromClaims()

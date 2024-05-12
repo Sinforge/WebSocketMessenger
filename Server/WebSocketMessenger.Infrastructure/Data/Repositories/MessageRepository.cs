@@ -47,9 +47,7 @@ namespace WebSocketMessenger.Infrastructure.Data.Repositories
         public async Task<IEnumerable<Message>> GetConversationMessagesAsync(Guid userId1, Guid userId2)
         {
             IEnumerable<Message> result = new LinkedList<Message>();
-            string selectQuery = "select * from public.message where " +
-                "(\"ReceiverId\" = @userId1 and \"SenderId\" = @userId2) or" +
-                "(\"ReceiverId\" = @userId2 and \"SenderId\" = @userId1); ";
+            string selectQuery = "SELECT * FROM public.message \nWHERE (\"ReceiverId\" = @userId1 AND \"SenderId\" = @userId2) \n    OR (\"ReceiverId\" = @userId2 AND \"SenderId\" = @userId1)\nORDER BY \"SendTime\"";
 
             using (var connection = _context.CreateConnection())
             {
@@ -63,7 +61,7 @@ namespace WebSocketMessenger.Infrastructure.Data.Repositories
         {
             IEnumerable<Message> result = new LinkedList<Message>();
             string selectQuery = "select * from public.message where " +
-                "\"ReceiverId\" = @groupId;";
+                "\"ReceiverId\" = @groupId order by \"SendTime\";";
 
             using (var connection = _context.CreateConnection())
             {
@@ -92,8 +90,8 @@ namespace WebSocketMessenger.Infrastructure.Data.Repositories
             try
             {
                 result = new LinkedList<DialogItemDto>();
-                string selectQuery = "WITH RankedMessages AS (SELECT  \"LastMessage\",\r\n        \"UserName\",\r\n        \"UserId\",\r\n        ROW_NUMBER() OVER (PARTITION BY \"UserId\" ORDER BY \"LastMessage\" DESC) AS rn\r\n    FROM (\r\n        select MAX(m.\"SendTime\") as \"LastMessage\",\r\n            case\r\n                when m.\"ReceiverId\" = @id then u_sender.username\r\n                else u_receiver.username\r\n            end as \"UserName\",\r\n            case\r\n                when m.\"ReceiverId\" = @id then u_sender.id\r\n                else u_receiver.id\r\n            end as \"UserId\"\r\n        from public.message m\r\n        join public.user u_sender on m.\"SenderId\" = u_sender.id\r\n        join public.user u_receiver on m.\"ReceiverId\" = u_receiver.id\r\n        where (m.\"SenderId\" = @id or m.\"ReceiverId\" = @id)\r\n  " +
-                    "          and m.\"MessageType\" = 1\r\n        group by m.\"SenderId\", m.\"ReceiverId\", u_sender.username, u_receiver.username, u_sender.id, u_receiver.id\r\n    ) AS subquery\r\n)\r\nSELECT \"LastMessage\", \"UserName\", \"UserId\" as \"Id\"\r\nFROM RankedMessages\r\nWHERE rn = 1";
+                string selectQuery =
+                    "WITH UserDialogs AS (\n    SELECT DISTINCT \"ReceiverId\" AS \"UserId\"\n    FROM message\n    WHERE \"SenderId\" = @id AND \"MessageType\" = 1\n\n    UNION\n\n    SELECT DISTINCT \"SenderId\" AS \"UserId\"\n    FROM message\n    WHERE \"ReceiverId\" = @id AND \"MessageType\" = 1\n)\n\nSELECT \n    ud.\"UserId\" as \"Id\",\n    concat(u.name, ' ', u.surname, ' (', u.username, ')') AS \"Username\",\n    CASE \n        WHEN m.\"MessageContentType\" = 2 THEN substring(m.\"Content\" from '^[^_]+_(.*)$') \n        ELSE m.\"Content\" \n    END as \"LastMessage\",\n    m.\"SendTime\" as \"SendTime\"\nFROM \n    UserDialogs ud\nJOIN (\n    SELECT \n        CASE \n            WHEN \"SenderId\" = @id THEN \"ReceiverId\"\n            ELSE \"SenderId\"\n        END AS \"OtherUserId\",\n        MAX(\"SendTime\") AS \"MaxSendTime\"\n    FROM \n        message\n    WHERE \n        (\"SenderId\" = @id OR \"ReceiverId\" = @id) AND \"MessageType\" = 1\n    GROUP BY \n        CASE \n            WHEN \"SenderId\" = @id THEN \"ReceiverId\"\n            ELSE \"SenderId\"\n        END\n) latest_message ON ud.\"UserId\" = latest_message.\"OtherUserId\"\nJOIN message m ON (m.\"SenderId\" = ud.\"UserId\" OR m.\"ReceiverId\" = ud.\"UserId\")\n    AND m.\"SendTime\" = latest_message.\"MaxSendTime\"\nJOIN public.user u ON u.id = latest_message.\"OtherUserId\";\n";
 
                 using (var connection = _context.CreateConnection())
                 {
@@ -133,7 +131,6 @@ namespace WebSocketMessenger.Infrastructure.Data.Repositories
 
         public async Task<IEnumerable<(Guid id, string message, DateTime sendTime)>> GetGroupsLastMessagesAsync(IEnumerable<Guid> groupIds)
         {
-            groupIds.ToList().ForEach(x => Console.WriteLine(x));
             var selectQuery = "select \"ReceiverId\" as id, \"Content\" as message, \"SendTime\" as \"sendTime\" " +
                               " from (select m.*, ROW_NUMBER() OVER (PARTITION BY \"ReceiverId\" ORDER BY \"SendTime\" DESC) " +
                               " AS rn FROM message m where \"ReceiverId\" = ANY(@ids) and \"MessageType\" = 2) as result where rn = 1";
@@ -146,6 +143,8 @@ namespace WebSocketMessenger.Infrastructure.Data.Repositories
 
             return result ?? new List<(Guid id, string message, DateTime sendTime)>();  
         }
+
+       
 
         public async Task<bool> UpdateMessageAsync(int messageId, string content, int contentType)
         {

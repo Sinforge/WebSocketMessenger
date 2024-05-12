@@ -19,12 +19,13 @@ const DialogItemList = observer(() => {
     const handleClickDialog = (event, axios, userId) => {
         setMessages(axios, userId);
     }
+    console.log(dialogs)
     return (
         
         <Box sx={{height: '700px', overflowY: 'auto'}}>
             {dialogs.length == 0 && <Box>You, not have dialogs</Box>}
             {dialogs.map((x, i) =>
-                <DialogItem userId={x.id} userName={x.username} lastMessage={x.lastMessage} key={i}/>
+                <DialogItem userId={x.id} userName={x.username} lastMessage={x.lastMessage} sendTime={x.sendTime} key={i}/>
             )}
         </Box>
     )

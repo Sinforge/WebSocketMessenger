@@ -1,12 +1,24 @@
-﻿using Microsoft.Extensions.FileProviders;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.FileProviders;
 
 namespace WebSocketMessenger.Infrastructure.FileSystem
 {
-    public class FileManager
+    public static class FileManager
     {
-        private const string UPLOAD_PATH = "C:\\Users\\vladv\\source\\repos\\WebSocketMessenger\\Upload\\";
+        private static string UPLOAD_PATH;
+        private static  PhysicalFileProvider _physicalFileProvider ;
 
-        private static  PhysicalFileProvider _physicalFileProvider = new PhysicalFileProvider(UPLOAD_PATH);
+
+        static FileManager()
+        {
+            IConfigurationRoot configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .Build();
+
+            UPLOAD_PATH = configuration["UploadPath"]; // Assuming "UploadPath" key exists in appsettings.json
+            _physicalFileProvider = new PhysicalFileProvider(UPLOAD_PATH);
+        }       
         // Returns string path
         public static string AddNewFile(string ecodedBase64File, string extention)
         {

@@ -15,30 +15,25 @@ function Login() {
     const handleSubmit = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-
-        let response = await authorizeUser({
-            Login : data.get("userName"),
-            Password: data.get("password")
-        });
-        if(response.status === 200) {
-            //errorMessage.current = ""
+        try {
+            let response = await authorizeUser({
+                Login : data.get("userName"),
+                Password: data.get("password")
+            });
             setUser({...user, access_token :response.data.access_token});
             Cookies.set("access_token", response.data.access_token)
             console.log(response.data);
             navigate("/")
-
-            //console.log(user.access_token)
         }
-        else {
-            console.log("Error")
-            //errorMessage.current = "Incorrect credentials"
-
+        catch (error) {
+            if (error.response && error.response.status === 400) {
+                toast.error("Incorrect credentials")
+            } else {
+                // Обработка других ошибок
+                console.error('Произошла ошибка:', error);
+            }
         }
-
-        // registerUser(data);
-        // navigate("/")
     }
-    const notify = () => toast.success('Toast Notification!');
 
     
     return(
@@ -81,7 +76,6 @@ function Login() {
                 >
                 Sign In
                 </Button>
-                <Button onClick={notify}>Toast test</Button>
             </Box>
             
             

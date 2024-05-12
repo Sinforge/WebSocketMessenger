@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
-import { createGroup } from '../../../../../services/group.service';
+import { updateGroup } from '../../../../../services/group.service';
 import useAxiosPrivate from '../../../../../hooks/useAxiosPrivate';
 import DialogStore from '../../../../../store/DialogStore';
-
-const CreateGroupWindow = () => {
+import SettingsIcon from '@mui/icons-material/Settings';
+const UpdateGroupWindow = () => {
     const axios = useAxiosPrivate();
     const [open, setOpen] = useState(false);
-    const { addGroup } = DialogStore;
+    const { addGroup, openedDialog, updateGroupLocaly } = DialogStore;
     const [inputValue, setInputValue] = useState('');
 
     const handleOpen = () => {
@@ -23,36 +23,32 @@ const CreateGroupWindow = () => {
     };
 
     const handleSubmit = async () => {
-        var id = (await createGroup(axios, inputValue)).data;
-        addGroup({
-            id: id,
-            name : inputValue,
-            lastMessage : null,
-            sendTime : null
-        });
-        handleClose();
+        // Handle form submission here
+        await updateGroup(axios, openedDialog, inputValue);
+        updateGroupLocaly(openedDialog, inputValue);
+        // Add your logic for form submission
+        handleClose(); // Close the dialog after submission
     };
 
     return (
         <div>
-            <Button onClick={handleOpen} variant="contained" color="primary">Create group</Button>
+            <SettingsIcon onClick={handleOpen}/>
             <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>Group creating</DialogTitle>
+                <DialogTitle>Group updating</DialogTitle>
                 <DialogContent>
                     <TextField
                         label="Enter group name"
                         value={inputValue}
                         onChange={handleInputChange}
-                        fullWidth
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose} color="secondary">Cancel</Button>
-                    <Button onClick={handleSubmit} color="primary">Submit</Button>
+                    <Button onClick={handleClose}>Cancel</Button>
+                    <Button onClick={handleSubmit}>Submit</Button>
                 </DialogActions>
             </Dialog>
         </div>
     );
 };
 
-export default CreateGroupWindow;
+export default UpdateGroupWindow;

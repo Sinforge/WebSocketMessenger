@@ -10,9 +10,11 @@ namespace WebSocketMessenger.UseCases.Services
     {
         private readonly IMessageRepository _messageRepository;
         private readonly IGroupRepository _groupRepository;
-        public MessageService(IMessageRepository messageRepository, IGroupRepository groupRepository) {
+        private readonly IUserRepository _userRepository;
+        public MessageService(IMessageRepository messageRepository, IGroupRepository groupRepository, IUserRepository userRepository) {
             _messageRepository = messageRepository;
             _groupRepository = groupRepository;
+            _userRepository = userRepository;
         }
 
         public async Task<IEnumerable<MessageDto>> GetMessageByGroupAsync(Guid userId, Guid groupId)
@@ -21,15 +23,23 @@ namespace WebSocketMessenger.UseCases.Services
             {
                 throw new SharedException("User not member of the group", 403);
             }
-            return from message in await _messageRepository.GetGroupMessagesAsync(groupId) select 
+
+            var messages = (await _messageRepository.GetGroupMessagesAsync(groupId)).ToArray();
+            var usersNames = (await _userRepository.GetUsersByIdsAsync(messages.Select(x => x.SenderId).Distinct().ToArray()))
+                .ToDictionary(
+                    x=> x.Id,
+                    x => $"{x.Name} {x.Surname} ({x.UserName})");
+            return from message in messages select 
                     new MessageDto()
                     {
                         Id = message.Id,
                         AuthorId = message.SenderId,
-                        Content = message.Content,
+                        Content = message.MessageContentType == 1 
+                            ? message.Content
+                            : message.Content.Substring(message.Content.IndexOf('_') + 1, message.Content.Length - message.Content.IndexOf('_') - 1),
                         MessageContentType = message.MessageContentType,
                         SendTime = message.SendTime,
-                        Username = "some user"
+                        Username = usersNames[message.SenderId]
                     };
         }
 
@@ -72,9 +82,9 @@ namespace WebSocketMessenger.UseCases.Services
 
         }
 
-        public Task<IEnumerable<DialogItemDto>> GetUserDialogs(Guid userId)
+        public async Task<IEnumerable<DialogItemDto>> GetUserDialogs(Guid userId)
         {
-            return _messageRepository.GetUserDialogs(userId);
+            return await _messageRepository.GetUserDialogs(userId);
         }
     }
 }

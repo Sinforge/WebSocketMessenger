@@ -60,7 +60,8 @@ namespace WebSocketMessenger.Infrastructure.WS
                 {
                     try
                     {
-                        await SendMessageAsync(data, WebSocketMessageType.Text, socket);
+                        if(socket.State == WebSocketState.Open)
+                            await SendMessageAsync(data, WebSocketMessageType.Text, socket);
                     }
                     catch
                     {
@@ -77,12 +78,13 @@ namespace WebSocketMessenger.Infrastructure.WS
 
         public async Task NotifyGroupAsync(string groupId, byte[] message)
         {
-            var data = new ArraySegment<byte>(message);
             var userIds = await _groupRepository.GetUserIdsByGroupAsync(Guid.Parse(groupId));
             var sockets = GetGroupSockets(userIds);
             foreach (var socket in sockets.ToList())
             {
-                await SendMessageAsync(data, WebSocketMessageType.Text, socket);
+                var data = new ArraySegment<byte>(message);
+                if(socket.State == WebSocketState.Open) 
+                    await SendMessageAsync(data, WebSocketMessageType.Text, socket);
             }
         }
 

@@ -6,5 +6,7 @@
         public string Username { get; set; }
 
         public string LastMessage { get; set; }
+        
+        public string SendTime { get; set; }
     }
 }

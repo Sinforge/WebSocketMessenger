@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Button, Container, Grid, Typography } from '@mui/material';
+import { Button, Container, Typography, Box } from '@mui/material';
 import { AuthContext } from '../../../providers/AuthProvider';
 import { useContext } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import DialogStore from '../../../store/DialogStore';
 import { observer } from 'mobx-react-lite';
+
 const FileUploader = observer(({socket}) => {
   const [file, setFile] = useState(null);
   const [fileBytes, setFileBytes] = useState([]);
@@ -24,17 +25,14 @@ const FileUploader = observer(({socket}) => {
       setFileBytes(bytes);
     };
     reader.readAsArrayBuffer(selectedFile);
-
   };
 
   const handleUpload = () => {
     if (!file) return;
 
-    // Split the string by "." to separate the file name and extension
     const parts = file.name.split(".");
-
-    // Get the last part of the split array, which will be the file extension
     const fileExtension = parts[parts.length - 1];
+
     let messageObj = {
       "HeaderInfo": {
         "From" : myId,
@@ -48,6 +46,7 @@ const FileUploader = observer(({socket}) => {
         "OriginalName": file.name
       }
     }
+
     socket.current.send(JSON.stringify(messageObj));
 
     let start = 0;
@@ -60,51 +59,43 @@ const FileUploader = observer(({socket}) => {
       start = end;
     }
     socket.current.send([]);
-    
-    // // Simulate file upload delay (remove in production)
-    // setTimeout(() => {
-    //   // Send base64String to JSON endpoint
-    //   // You can use fetch or any HTTP client library to make the request
-    //   console.log('Uploading file:', base64String);
-    // }, 1000);
+
+    // Сбросить выбранный файл
+    setFile(null);
   };
 
-  return(
-   <Container> { openedDialog !== null &&
-      <Grid container spacing={2} alignItems="center">
-        <Grid item xs={12}>
+  return (
+    <Container>
+      {openedDialog !== null && (
+        <Box sx={{ marginTop: 2, display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
           <Typography variant="h6" gutterBottom>
             Upload a File
           </Typography>
-        </Grid>
-        <Grid item xs={12}>
+          <label htmlFor="file-input" style={{ marginLeft: '16px' }}>
+            <Button component="span" variant="outlined" color="primary">
+              Choose File
+            </Button>
+          </label>
           <input
-            accept="image/*" // Set accepted file types if necessary
             id="file-input"
             type="file"
             style={{ display: 'none' }}
             onChange={handleFileChange}
           />
-          <label htmlFor="file-input">
-            <Button component="span" variant="outlined" color="primary">
-              Choose File
-            </Button>
-          </label>
-          {file && <Typography variant="body1">{file.name}</Typography>}
-        </Grid>
-        <Grid item xs={12}>
+          {file && <Typography variant="body1" style={{ marginLeft: '16px' }}>{file.name}</Typography>}
           <Button
             variant="contained"
             color="primary"
             onClick={handleUpload}
             disabled={!file}
+            style={{ marginLeft: '16px' }}
           >
             Upload
           </Button>
-        </Grid>
-      </Grid>
-    }
-    </Container>)
+        </Box>
+      )}
+    </Container>
+  );
 });
 
 export default FileUploader;

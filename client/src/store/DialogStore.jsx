@@ -8,6 +8,7 @@ class DialogStore {
     openedUser = null;
     openedGroup = null;
     messageType = 0;
+    groupRoleId = -1;
     constructor() {
         // makeObservable(this, {
         //     messages: observable,
@@ -16,21 +17,37 @@ class DialogStore {
         makeAutoObservable(this);
     }
 
+    setGroupRole = (groupRoleId) => {
+        this.groupRoleId = groupRoleId;
+    }
+
     createConnection = (webSocket) => {
         this.webSocket = webSocket;
     }
 
+    deleteGroup = (groupId) => {
+
+        this.dialogs = this.dialogs.filter(x => x.id !== groupId);
+    }
+
     setMessageType = (type) => {
         this.messageType = type;
+        this.messages = [];
+
+        this.openedDialog = null;
+        this.openedUser = null;
+        this.openedGroup = null;
+
     }
 
     updateMessageContent = (message) => {
-        if(this.openedDialog === message.senderId) {
-            let indexOfMessage = this.messages.findIndex(x => x.id === message.id);
-            if(indexOfMessage !== -1) {
-                this.messages[indexOfMessage] ={...this.messages[indexOfMessage], content:  message.newContent};
-           }
+            if(this.openedDialog === message.convId) {
+                let indexOfMessage = this.messages.findIndex(x => x.id === message.id);
+                if(indexOfMessage !== -1) {
+                    this.messages[indexOfMessage] ={...this.messages[indexOfMessage], content:  message.newContent};
+            }
         }
+       
     }
 
     deleteMessageContent = (messageId) => {
@@ -47,7 +64,7 @@ class DialogStore {
             element.lastMessage = message.Content;
             this.dialogs.unshift(element);
         }
-        else {
+        else if(message.messageContentType === this.messageType){
             this.dialogs.push({id : message.SenderId, username: 'income user', lastMessage: message.Content})
         }
 
@@ -62,7 +79,10 @@ class DialogStore {
         }
     }
     setIncomeMessage = (message) => {
-        let indexOfDialog = this.dialogs.findIndex(x => x.id === message.SenderId);
+        
+        let indexOfDialog = null;
+        if(this.messageType === 0) indexOfDialog =this.dialogs.findIndex(x => x.id === message.SenderId);
+        else indexOfDialog = this.dialogs.findIndex(x => x.id === message.ReceiverId);
         if(indexOfDialog !== -1) {
             let element = this.dialogs.splice(indexOfDialog, 1)[0];
             element.lastMessage = message.Content;
@@ -72,14 +92,27 @@ class DialogStore {
             this.dialogs.push({id : message.SenderId, username: 'income user', lastMessage: message.Content})
         }
 
-        if(this.openedDialog === message.SenderId) {
-            this.messages.push({
-                id: message.Id,
-                authorId: message.SenderId,
-                content: message.Content,
-                messageContentType : message.messageContentType,
-                sendTime: message.SendTime
-            })
+        if(this.messageType === 0) {
+            if(this.openedDialog === message.SenderId) {
+                this.messages.push({
+                    id: message.Id,
+                    authorId: message.SenderId,
+                    content: message.Content,
+                    messageContentType : message.messageContentType,
+                    sendTime: message.SendTime
+                })
+            }
+        }
+        else {
+            if(this.openedDialog === message.ReceiverId) {
+                this.messages.push({
+                    id: message.Id,
+                    authorId: message.SenderId,
+                    content: message.Content,
+                    messageContentType : message.messageContentType,
+                    sendTime: message.SendTime
+                })
+            }
         }
 
     }
@@ -97,8 +130,25 @@ class DialogStore {
         this.messages = data 
     }
 
+    updateGroupLocaly = (groupId, name) => {
+        this.dialogs = this.dialogs.map(x => {
+            if(x.id === groupId) {
+                return {...x, "name":  name}
+            }
+            return x;
+            }
+        )
+        this.openedGroup = {... this.openedGroup, "name": name}
+    }
+
     addGroup = (group) => {
-        this.dialogs.push(group)
+        const newGroup = {
+            id: group.id,
+            name: group.name,
+            lastMessage: group.lastMessage,
+            sendTime: group.sendTime
+        };
+        this.dialogs.push(newGroup);
     }
 
 

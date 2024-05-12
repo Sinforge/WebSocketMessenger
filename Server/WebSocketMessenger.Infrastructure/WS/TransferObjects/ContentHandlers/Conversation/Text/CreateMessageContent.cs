@@ -40,7 +40,7 @@ namespace WebSocketMessenger.Infrastructure.WS.TransferObjects.ContentHandlers.C
                     Username = username
                 })), header.Type);
             
-            _ =  connectionManager.NotifySocketsAsync(header.To.ToString(), 
+            await connectionManager.NotifySocketsAsync(header.To.ToString(), 
                 Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new  
                 {
                     Id = id,
@@ -50,7 +50,7 @@ namespace WebSocketMessenger.Infrastructure.WS.TransferObjects.ContentHandlers.C
                     Content = Content,
                     messageContentType = 1,
                     MessageType = "CreateMessage",
-                    Username = username
+                    Username = username,
                 })), header.Type);
         }
     }

@@ -16,4 +16,6 @@ public interface IGroupService
     Task KickUserFromGroupAsync(Guid groupId, Guid userId);
 
     Task UpdateUserGroupRoleAsync(Guid groupId, Guid userId, int roleId);
+
+    Task UpdateGroupAsync(Guid groupId, string name);
 }

@@ -10,7 +10,7 @@ import FileMessage from "./Messages/FileMessage";
 import useAxiosPrivateWithBlob from "../../../hooks/useAxiosPrivateWithBlob";
 
 const MessageList = observer(({socket}) => {
-    const { messages, deleteMessageContent, openedDialog, updateMessageContent} = DialogStore;
+    const { messages, deleteMessageContent, openedDialog, messageType ,updateMessageContent} = DialogStore;
     const [user, setUser] = useContext(AuthContext);
     const axios = useAxiosPrivateWithBlob();
     const myId = jwtDecode(user.access_token)["Id"];
@@ -21,7 +21,7 @@ const MessageList = observer(({socket}) => {
                 "HeaderInfo": {
                     "Method" : "UpdateMessage",
                     "To": openedDialog,
-                    "Type": 1
+                    "Type": messageType + 1
                 },
                 "MessageContent": {
                     "MessageId": messageId,

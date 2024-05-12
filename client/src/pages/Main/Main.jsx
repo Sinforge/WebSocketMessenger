@@ -15,7 +15,7 @@ import FileUploader from './components/FileUploader'
 import MessageTypeSwitch from "./components/MessageTypeSwitch";
 import GroupItemList from "./components/Group/GroupItemList";
 import GroupHeader from "./components/Group/GroupHeader";
-
+import CreateGroupWindow from "./components/Group/DialogWindows/CreateGroupWindow";
 
 const Main = observer(() => {
     const [user, setUser] = useContext(AuthContext);
@@ -86,24 +86,37 @@ const Main = observer(() => {
 
     return (
 
-        <Box component='div' sx={{marginTop: "100px"}}>
+        <Box component='div' sx={{marginTop: "100px", overflow: "hidden"}}>
             <Grid container xs={12}>
                 <Grid xs={4}>
-                    <MessageTypeSwitch/>
+                    { messageType == 0 ? 
+                        <MessageTypeSwitch/>
+                    :
+                    <Box sx={{ display: 'flex', justifyContent: 'center',flexDirection: 'row', alignItems : 'center' }}>
+                            <MessageTypeSwitch/>
+                            <CreateGroupWindow/>
+                    </Box>
+                    }
                     { messageType == 0 
-                        ? <DialogItemList /> 
-                        : <GroupItemList/>}
+                        ?
+                        <DialogItemList /> 
+                        : 
+                        <GroupItemList />
+
+                       }
                 </Grid>
                 <Grid>
                     <Divider orientation="vertical"/>
                 </Grid>
-                <Grid xs={7}>
+                <Grid xs={7} sx={{overflow: "hidden"}}>
                     { messageType == 0 
                         ? <DialogHeader/>
                         : <GroupHeader/>}
                     <MessageList socket={socket}/>
-                    <InputField socket={socket} />
-                    <FileUploader socket={socket}/>
+                    <Box sx={{ position: 'sticky', top: 0 }}>
+                        <InputField socket={socket} />
+                        <FileUploader socket={socket}/>
+                    </Box>
 
 
                 </Grid>

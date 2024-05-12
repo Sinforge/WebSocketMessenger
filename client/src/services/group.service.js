@@ -25,3 +25,7 @@ export function deleteUserFromGroup(axios, groupId, userId) {
 export function updateUserGroupRole(axios, groupId, userId, roleId) {
     return axios.put("/group/members", {"GroupId": groupId, "UserId": userId, "RoleId": roleId})
 }
+
+export function updateGroup(axios, groupId, name) {
+    return axios.put("/group", {"GroupId": groupId, "Name": name})
+}

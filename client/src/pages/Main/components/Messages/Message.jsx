@@ -3,17 +3,22 @@ import { Avatar, Box, Typography, Menu, MenuItem, Dialog, DialogTitle, DialogCon
 import DialogStore from "../../../../store/DialogStore";
 import { observer } from "mobx-react-lite";
 
+const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true };
+
 const Message = observer(({ message, myId, updateMessage, deleteMessage }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [openModal, setOpenModal] = useState(false);
 
-  const { updateMessageContent, deleteMessageContent } = DialogStore
+  const { groupRoleId, messageType} = DialogStore;
 
   const [currentMessage, setCurrentMessage] = useState(message.content);
   const [updatedMessage, setUpdatedMessage] = useState(message.content);
 
   const isMyMessage = message.authorId === myId;
+
+
+
 
   const handleOpenMenu = (event) => {
     if (!menuOpen) {
@@ -77,11 +82,12 @@ const Message = observer(({ message, myId, updateMessage, deleteMessage }) => {
         }}
         onClick={handleTextClick}
       >
+        <Typography variant="caption">{message.username}</Typography>
         <Typography variant="body1">{currentMessage}</Typography>
-        <Typography variant="caption">{message.sendTime}</Typography>
+        <Typography variant="caption">{new Intl.DateTimeFormat('en-US', options).format(new Date(message.sendTime))}</Typography>
         <Typography variant="caption">{message.messageContentType}</Typography>
       </Box>
-      {menuOpen && isMyMessage &&(
+      {menuOpen && (isMyMessage || messageType === 1 && groupRoleId <= 2) &&(
         <Menu
           anchorEl={anchorEl}
           open={menuOpen}
